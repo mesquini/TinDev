@@ -37,8 +37,7 @@ module.exports = {
         bio,
         avatar,
     })
+    
         return res.json(dev_value)
-    }
-
-   
+    }  
 }

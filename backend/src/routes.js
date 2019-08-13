@@ -6,13 +6,13 @@ const DislikesController = require('./controllers/DeslikeController')
 const routes = express.Router()
 
 routes.get('/', (req, res) => {
-    return res.json( {message : 'ola word'})
+    return res.json( {message : 'ola world'})
 })
 
-routes.get('/devs', DevController.index)
-routes.post('/devs', DevController.store)
-routes.post('/devs/:devId/likes', LikeController.store)
-routes.post('/devs/:devId/dislikes', DislikesController.store)
+routes.get('/dashboard', DevController.index)
+routes.post('/dashboard', DevController.store)
+routes.post('/dashboard/:devId/likes', LikeController.store)
+routes.post('/dashboard/:devId/dislikes', DislikesController.store)
 
 
 module.exports = routes
