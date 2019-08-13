@@ -1,5 +1,5 @@
-# TinderDevs
-Um tinder de desenvolvedores para caso ocorra um 'meeting' poder realizar par programmings.
+# TinDev
+Um tinder de desenvolvedores para caso ocorra um <strong>match</strong> poder realizar par programmings.
 
  ## Para executar o projeto segue os passos a baixo:
  ```
