@@ -27,17 +27,37 @@ module.exports = {
     if(userExists)
         return res.json(userExists)
 
-    const {data : response} = await axios.get(`https://api.github.com/users/${username}`)
+    try{
+        const {data : response} = await axios.get(`https://api.github.com/users/${username}`)
 
-    const {name, bio, avatar_url : avatar} = response
+        var {name, bio, avatar_url : avatar, html_url : url_github, company, email, blog} = response
 
-    const dev_value = await dev.create({
-        name,
-        user: username,
-        bio,
-        avatar,
-    })
-    
+        name = (name === null ? username : name)
+        bio = (bio === null ? 'Biografia não informada' : bio)
+        
+        const dev_value = await dev.create({
+                name,
+                user: username,
+                bio,
+                avatar,
+                company,
+                blog,
+                email,
+                url_github
+        })
+
         return res.json(dev_value)
+
+        }catch({message}){            
+            return res.json({'status' : message})
+        }
+    },
+
+    async delete(req, res) {
+        const  {devId} = req.params
+
+        await dev.findByIdAndDelete(devId)
+
+        return res.json({'Status' : 'Usuario deletado com sucesso'})
     }  
 }

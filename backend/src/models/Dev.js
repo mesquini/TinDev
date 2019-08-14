@@ -14,6 +14,10 @@ const DevSchema = new Schema({
         type : String,
         required : true,
     },
+    company : String,
+    blog : String,
+    email : String,
+    url_github : String,
     likes: [{
         type : Schema.Types.ObjectId,
         ref : 'Dev',

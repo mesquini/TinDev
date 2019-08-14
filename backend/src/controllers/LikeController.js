@@ -14,6 +14,7 @@ module.exports = {
         }
         if(targetDev.likes.includes(loggeDev._id)){
             console.log('Deu match !!\nQue demais')
+            return res.json({'Status' : 'Deu match !!\nQue demais'})
         }
 
         loggeDev.likes.push(targetDev._id)
