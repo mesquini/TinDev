@@ -32,7 +32,6 @@ export default function Dashboard({match}){
         await api.post(`/dashboard/${id}/dislikes`, null, {
             headers : {user: match.params.id}
         })
-
         setUsers(users.filter(user => user._id !== id))
     }
 
@@ -40,9 +39,7 @@ export default function Dashboard({match}){
         <div className="main-conteiner">
             <a href="" >
              <img src={logo} alt="logo"></img>
-
-            </a>
-            
+            </a>            
             {users.length > 0 ? (
                 <ul>
                 {users.map(user => (

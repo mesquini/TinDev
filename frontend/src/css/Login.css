@@ -12,7 +12,7 @@
 }
 
 .login-container form input {
-    margin-top: 20px;
+    margin-top: 5%;
     border: 1px solid #ddd;
     border-radius: 4px;
     height: 48px;
@@ -38,4 +38,19 @@
 }
 .login-container form button:hover{
     background: #ec360d;
+}
+
+.login-container form .erro{
+    color: #fb0707;
+    margin-top: 4%;
+    text-align: center;    
+    display: none;
+}
+.login-container form .loading{
+    color: rgb(0, 0, 0);
+    margin-top: 4%;
+    display: none;
+}
+.login-container form .loading img{
+    padding-left: 57%;
 }
