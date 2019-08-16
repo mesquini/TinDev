@@ -8,7 +8,7 @@ export default function Routes(){
     return(
         <BrowserRouter>
             <Route path="/" exact component = {login}/>
-            <Route path="/dashboard/:id" component = {dashboard}/>
+            <Route path="/dashboard/:id" exact component = {dashboard}/>
         </BrowserRouter>
     )
 }

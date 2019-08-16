@@ -38,6 +38,12 @@
 }
 .login-container form button:hover{
     background: #ec360d;
+    animation: all 0.2s;
+}
+
+.login-container form .tratativa{
+    display: flex;
+    justify-content: space-between;
 }
 
 .login-container form .erro{
@@ -51,6 +57,6 @@
     margin-top: 4%;
     display: none;
 }
-.login-container form .loading img{
-    padding-left: 57%;
+.login-container form #load{
+    display: none;
 }

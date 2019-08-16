@@ -6,10 +6,11 @@ import api from '../services/api'
 import '../css/Login.css'
 
 export default function Login({history}){
+    
     const [username, setUsername] = useState('')
     let erroEl = document.getElementById('erro')
     var loadingEl = document.getElementById('loading')
-    let formEl = document.getElementById('repo-form')  
+    let loadEl = document.getElementById('load')  
 
     async function handleSubmit(e){
         e.preventDefault()     
@@ -29,26 +30,32 @@ export default function Login({history}){
         else 
             erroEl.style.display = 'none';
 
-        if(loading === true)          
+        if(loading === true){
             loadingEl.style.display = 'block';   
-        else 
-            loadingEl.style.display = 'none';      
+            loadEl.style.display = 'block';  
+        } 
+        else {
+            loadingEl.style.display = 'none'; 
+            loadEl.style.display = 'none'; 
+        }     
     }
 
     return(
         <div className="login-container">
             <form onSubmit={handleSubmit} id='repo-form'>
-                {}
-                <img src={logo} alt= "tindev"></img>
+                <img src={logo} alt= "tindev" />
                 <input id="username"
                 value={username}
                 required = {true}
                 onChange={e => setUsername(e.target.value)}
                 placeholder="Digite seu usuario no GitHub"
                 />
-                <button type='submit'>Logar</button>                  
+                <button type='submit'>Logar</button>
                 <strong className="erro" id="erro">Usuario não existente!</strong>
-                <strong className="loading" id="loading">Carregando...<img src={load}></img></strong>
+                <div className="tratativa">
+                    <strong className="loading" id="loading">Carregando...</strong>
+                    <img src={load} id="load" />
+                </div>                  
             </form>
         </div>        
     );    

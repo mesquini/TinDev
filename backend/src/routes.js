@@ -10,8 +10,10 @@ routes.get('/', (req, res) => {
 })
 
 routes.get('/dashboard', DevController.index)
-routes.post('/dashboard', DevController.store)
+
 routes.delete('/dashboard/:devId', DevController.delete)
+
+routes.post('/dashboard', DevController.store)
 routes.post('/dashboard/:devId/likes', LikeController.store)
 routes.post('/dashboard/:devId/dislikes', DislikesController.store)
 
