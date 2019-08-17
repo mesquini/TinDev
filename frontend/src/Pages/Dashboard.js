@@ -24,7 +24,7 @@ export default function Dashboard({match}){
     }, [match.params.id])
 
     useEffect(() => {
-        const socket = io('http://localhost:3333', {query : {
+        const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:3333', {query : {
             user : match.params.id
         }})
 
@@ -51,9 +51,7 @@ export default function Dashboard({match}){
 
     return(
         <div className="main-conteiner">
-            <a href="">
              <img src={logo} alt="logo" />
-            </a>            
             {users.length > 0 ? (
                     <ul>
                     {users.map(user => (
