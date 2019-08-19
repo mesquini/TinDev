@@ -44,7 +44,7 @@ module.exports = {
                 blog,
                 email,
                 url_github
-        })
+                })
 
         return res.json(dev_value)
 

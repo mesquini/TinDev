@@ -15,6 +15,7 @@ routes.delete('/dashboard/:devId', DevController.delete)
 
 routes.post('/dashboard', DevController.store)
 routes.post('/dashboard/:devId/likes', LikeController.store)
+routes.get('/dashboard/:devId/match', LikeController.match)
 routes.post('/dashboard/:devId/dislikes', DislikesController.store)
 
 
