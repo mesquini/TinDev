@@ -54,7 +54,7 @@ export default function Login({history}){
                 <strong className="erro" id="erro">Usuario não existente!</strong>
                 <div className="tratativa">
                     <strong className="loading" id="loading">Carregando...</strong>
-                    <img src={load} id="load" />
+                    <img src={load} id="load" alt="load" />
                 </div>                  
             </form>
         </div>        

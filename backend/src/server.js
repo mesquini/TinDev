@@ -4,12 +4,10 @@ const routes = require('./routes')
 const cors = require('cors')
 
 const app = express()
-const server = require('http').Server(app)
+const server = require('https').Server(app)
 const io = require('socket.io')(server)
 
-const connectedUsers = {
-    
-}
+const connectedUsers = {}
 
 io.on('connect', socket => {
     const {user} = socket.handshake.query
@@ -18,7 +16,7 @@ io.on('connect', socket => {
 
 })
 
-mongoose.connect('mongodb+srv://mesquini:mesquini@cluster0-2wxw0.mongodb.net/tindevs?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGODB || 'mongodb+srv://tindev:tindev@cluster0-2wxw0.mongodb.net/tindevs?retryWrites=true&w=majority', {
     useNewUrlParser : true
 })
 
@@ -33,4 +31,4 @@ app.use(cors())
 app.use(express.json())
 app.use(routes)
 
-server.listen(3333)
+server.listen(process.env.PORT || 3333)
