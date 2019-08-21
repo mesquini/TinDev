@@ -100,8 +100,8 @@ export default function Dashboard({match, history}){
                             <strong>{matchDev.name}</strong>
                             <p>{matchDev.bio}</p>
                             <button type="button" onClick={() => setMatchDev(null)}>FECHAR</button>
-                        </div>
-                    )}
+                        </div>        
+                    )}     
             </div>
         </div>    
     );

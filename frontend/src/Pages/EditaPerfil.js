@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react'
 import logo from '../assets/logo.svg'
-import load from '../assets/load.svg'
 
 import api from '../services/api'
 import '../css/EditaPerfil.css'
