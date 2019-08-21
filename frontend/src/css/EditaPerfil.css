@@ -1,0 +1,84 @@
+.main-conteiner{
+    max-width: 980px;
+    margin: 0 auto;
+    text-align: center;
+}
+.edita-perfil{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.edita-perfil .logo {
+    margin: 1%;
+    cursor: pointer;
+}
+
+.edita-perfil .logo:hover{
+    transform: translate(2px, 2px);
+    transition: all 0.5s;
+
+}
+
+.edita-perfil .avatar{
+    border-radius: 50%;
+    border: 1px solid #fff;
+    width: 10%;
+}
+.main-container form{
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+.main-container p{
+    margin-bottom: 2%;
+    margin-top: 1%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+}
+.edita-perfil form input, textarea {
+    margin-top: 5%;
+    font-family: Arial, Helvetica, sans-serif;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding:  0 20px;
+    font-size: 16px;
+    color:  #666;
+    max-width: 100%;
+    min-width: 100%;
+    min-height: 40px;    
+    text-align: center;
+    align-items: center;
+}
+.edita-perfil form textarea{
+    padding-top: 15px;
+}
+.main-container form input,textarea::placeholder{
+    color: #999;    
+}
+
+.main-container form button{
+    margin-top: 10px;
+    border: 0px;
+    border-radius: 4px;
+    height: 48px;
+    font-size: 16px;
+    background: #df4723;
+    font-weight: bold;
+    color: #ddd;
+    cursor: pointer;
+
+}
+.main-container form button:hover{
+    background: #ec360d;
+    animation: all 0.3s;
+}
+
+@media only screen and (max-device-width: 700px) {
+    .edita-perfil .avatar{
+        margin-top: 5%;
+        width: 18%;
+    }
+}

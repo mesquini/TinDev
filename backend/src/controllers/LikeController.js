@@ -16,9 +16,7 @@ module.exports = {
         if(targetDev.likes.includes(loggeDev._id)){
 
             await match.create({
-                loggerId : loggeDev._id,
-                targetId : targetDev._id,
-                visualizado : false
+                match : [loggeDev._id, targetDev._id],
             })
 
             const loggeSocket = req.connectedUsers[user]
@@ -39,9 +37,23 @@ module.exports = {
     },
     async match(req, res){
         const { devId } = req.params
+        const objMatch = await match.find({match : devId})
 
-        const objMatch = await match.find({$or: [{targetId : devId}, {loggerId : devId}]})
-        
-        return res.json(objMatch)
+        for (const key in objMatch) {
+            if  (objMatch.hasOwnProperty(key)) {
+                const {match : id} = objMatch[key];
+
+                for (var i=id.length-1; i>=0; i--) {
+                    if (id[i] == devId) 
+                        id.splice(i, 1);                    
+                }
+            }
+        }
+        var users = []        
+        for (var i=objMatch.length-1; i>=0; i--) {             
+            const {match : id} = objMatch[i];               
+            users[i] = await dev.findOne({_id : id})           
+        }
+        return res.json(users)
     }
 }

@@ -10,7 +10,7 @@ module.exports = {
 
      const users = await dev.find({
          $and:[
-             { _id : { $ne : user }},
+             //{ _id : { $ne : user }},
              { _id : { $nin : loggeDev.likes }},
              { _id : { $nin : loggeDev.dislikes }},                
 
@@ -20,7 +20,7 @@ module.exports = {
     },
     
     async store(req, res){
-    const {username} = req.body
+    const { username } = req.body;
 
     const userExists = await dev.findOne({user : username})
 
@@ -37,7 +37,7 @@ module.exports = {
         
         const dev_value = await dev.create({
                 name,
-                user: username,
+                user : username,
                 bio,
                 avatar,
                 company,
@@ -59,5 +59,13 @@ module.exports = {
         await dev.findByIdAndDelete(devId)
 
         return res.json({'Status' : 'Usuario deletado com sucesso'})
+    }  ,
+    async update(req, res) {
+        const  {devId} = req.params
+        const update = req.body
+
+        await dev.findOneAndUpdate({_id : devId}, update)
+
+        return res.json({status : "Alterado com sucesso!"})
     }  
 }

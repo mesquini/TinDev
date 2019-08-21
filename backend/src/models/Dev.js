@@ -1,19 +1,10 @@
 const { Schema, model } = require('mongoose')
 
 const DevSchema = new Schema({
-    name:{
-        type: String,
-        required: true,
-    },
-    user:{
-        type: String,
-        required: true,
-    },
+    name: String,
+    user: String,    
     bio : String,
-    avatar : {
-        type : String,
-        required : true,
-    },
+    avatar : String,
     company : String,
     blog : String,
     email : String,

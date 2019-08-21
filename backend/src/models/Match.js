@@ -1,15 +1,14 @@
 const { Schema, model } = require('mongoose')
 
 const MatchSchema = new Schema({    
-    loggerId: {
+    match: [{
         type : Schema.Types.ObjectId,
         ref : 'Dev',
-    },
-    targetId: {
-        type : Schema.Types.ObjectId,
-        ref : 'Dev',
-    },
-    visualizado : Boolean,    
+    }],
+    visualizado : {
+        type : Number,
+        default : 0,
+    }    
 }, {
         timestamps : true,    
 })
