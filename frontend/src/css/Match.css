@@ -1,0 +1,67 @@
+.match-conteiner{    
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+.match-conteiner .logo {
+    margin-top: 1%;
+    cursor: pointer;
+}
+.match-conteiner .logo:hover {
+    transform: translate3d(0px, -3px, 0px);
+    transition: all 0.2s;
+}
+
+.matchs ul{
+    list-style: none;
+    margin-top: 50px;
+}
+
+.matchs ul li{
+    display: flex;
+    flex-direction: row;    
+    margin-bottom: 5px;
+}
+
+.matchs ul li .avatar{
+    max-width: 100%;
+    height: 106.66px;
+    border-radius: 5px;
+    border: 1px solid black;
+    
+}
+.matchs ul li .avatar:hover{
+    transform: translate3d(0px, -3px, 0px);
+    transition: all 0.2s;
+}
+.matchs ul li .github{
+    max-width: 4%;
+    margin-left: 1%;
+    cursor: pointer;
+}
+.matchs ul li .github:hover{
+    transform: translate3d(0px, -3px, 0px);
+    transition: all 0.2s;
+}
+
+.matchs ul li footer{
+    flex: 1;
+    background: #ffff;
+    border:  1px solid #eee;
+    padding: 15px 20px;
+    text-align: left;
+    border-radius: 5px;
+}
+
+.matchs ul li footer strong{
+    font-size:  16px;
+    color: #333;
+    display: flex;
+}
+
+.matchs ul li footer p {
+    font-size: 14px;
+    line-height: 20px;
+    color: #999;
+    margin-top: 5px;
+}

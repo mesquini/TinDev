@@ -64,7 +64,7 @@ export default function Dashboard({match, history}){
     return(
         <div className="">
             <header className="header">
-                <a href={user.map(user => user.url_github)} target="_blank"><img className="github" src={github} alt="github" /></a>
+                <a href={user.map(user => user.url_github)} target="_blank" rel="noopener noreferrer"><img className="github" src={github} alt="github" /></a>
                 <button type="button" onClick={handleClickPerfil} className="btAvatar">
                     <img src={user.map(user => user.avatar)} alt="avatar"/>
                 </button>                    

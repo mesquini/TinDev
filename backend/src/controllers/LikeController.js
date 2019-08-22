@@ -37,6 +37,7 @@ module.exports = {
     },
     async match(req, res){
         const { devId } = req.params
+
         const objMatch = await match.find({match : devId})
 
         for (const key in objMatch) {
