@@ -9,6 +9,7 @@ const DevSchema = new Schema({
     blog : String,
     email : String,
     url_github : String,
+    celular : String,
     likes: [{
         type : Schema.Types.ObjectId,
         ref : 'Dev',

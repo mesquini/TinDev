@@ -1,0 +1,66 @@
+.header {
+    height: 6vh;
+    margin-bottom: 2%;
+    background-color:  #d83814;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header button {
+    background: transparent;
+    border: 0;
+}
+.header img{
+    margin: 10px;
+}
+
+.header .btAvatar img {
+    width: 35px;
+    border-radius: 50%;
+    border: 1.5px solid #fff;
+    cursor: pointer;
+    margin: 3px 3px 0 0;
+    background: none;
+}
+.header .btAvatar img:hover {
+   transform: rotate(1turn);
+   transition: all 1.5s;
+}
+ 
+.header .match img{
+    max-width: 35px;
+    cursor: pointer;
+    background: none;    
+    border-radius: 50%;
+    border: 1px solid #fff;
+} 
+.header .github {
+    width: 32px;
+    cursor: pointer;
+    background: none;
+} 
+.header .github:hover{
+    transform: translateY(-2px);    
+    transition: all 0.2s;
+    border-radius: 50%;
+    background-color: rgb(255, 255, 255,0.5);
+}
+
+.header .match img:hover{
+    transform: translateY(-2px);    
+    transition: all 0.2s;
+    border-radius: 50%;
+    background-color: rgb(255, 255, 255,0.3);
+}
+
+@media only screen and (max-device-width: 700px) {
+    .header {
+        margin-bottom: 5%;
+        background-color:  #d83814;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+}

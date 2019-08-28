@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react'
 import io from 'socket.io-client'
 import '../css/Dashboard.css'
+import '../css/Header.css'
 import api from '../services/api'
 
 import logo from '../assets/logo.svg'
 import itsamatch from '../assets/itsamatch.png'
 import like from '../assets/like.svg'
 import deslike from '../assets/dislike.svg'
-import matchLogo from '../assets/match.png'
+import matchLogo from '../assets/match.svg'
 import github from '../assets/github.svg'
 
 
@@ -15,7 +16,7 @@ export default function Dashboard({match, history}){
     const [users, setUsers] = useState([])
     const [matchDev, setMatchDev] = useState(null)
     const [user, setUser] = useState([])    
-    
+
     useEffect(() => {
         async function loadUsers(){
             const {data} = await api.get('/dashboard',{
@@ -23,6 +24,7 @@ export default function Dashboard({match, history}){
             })
             setUsers(data.filter(user => user._id !== match.params.id))
             setUser(data.filter(user => user._id === match.params.id))
+            
         }
         loadUsers()
     }, [match.params.id])
@@ -90,7 +92,7 @@ export default function Dashboard({match, history}){
                         </li>
                         ))}
                     </ul>
-                    ) : (
+                    ) :  (
                         <div className="empty">Acabou :(</div>
                     ) }
                     {matchDev && (

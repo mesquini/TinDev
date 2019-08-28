@@ -31,10 +31,13 @@ module.exports = {
         const {data : response} = await axios.get(`https://api.github.com/users/${username}`)
 
         var {name, bio, avatar_url : avatar, html_url : url_github, company, email, blog} = response
+        var celular = null
 
         name = (name === null ? username : name)
         bio = (bio === null ? 'Biografia não informada' : bio)
-        
+        email = (email === null ? 'Email não informado' : email)
+        blog = (blog === null ? 'Blog não informado' : blog)
+
         const dev_value = await dev.create({
                 name,
                 user : username,
@@ -43,7 +46,8 @@ module.exports = {
                 company,
                 blog,
                 email,
-                url_github
+                url_github,
+                celular,
                 })
 
         return res.json(dev_value)
@@ -62,6 +66,7 @@ module.exports = {
     }  ,
     async update(req, res) {
         const  {devId} = req.params
+
         const update = req.body
 
         await dev.findOneAndUpdate({_id : devId}, update)

@@ -15,7 +15,7 @@
 }
 
 .edita-perfil .logo:hover{
-    transform: translate(2px, 2px);
+    transform: translate3d(0px,-3px,10px);
     transition: all 0.5s;
 
 }
@@ -45,7 +45,7 @@
     border-radius: 5px;
     padding:  0 20px;
     font-size: 16px;
-    color:  #666;
+    color:  rgb(65, 65, 65);
     max-width: 100%;
     min-width: 100%;
     min-height: 40px;    
@@ -56,7 +56,7 @@
     padding-top: 15px;
 }
 .main-container form input,textarea::placeholder{
-    color: #999;    
+    color: rgb(53, 53, 53);    
 }
 
 .main-container form button{
@@ -69,7 +69,7 @@
     font-weight: bold;
     color: #ddd;
     cursor: pointer;
-
+    margin-bottom: 20px;
 }
 .main-container form button:hover{
     background: #ec360d;

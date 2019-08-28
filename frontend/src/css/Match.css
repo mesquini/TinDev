@@ -1,6 +1,9 @@
 .match-conteiner{    
     max-width: 700px;
     margin: 0 auto;
+    top: 0;
+    bottom: 0;
+    padding: 0;
     text-align: center;
 }
 .match-conteiner .logo {
@@ -23,6 +26,18 @@
     margin-bottom: 5px;
 }
 
+.matchs ul li footer strong{
+    font-size:  16px;
+    color: #333;
+    display: grid;
+    grid-template-columns: 150px 40px 40px 40px 575px;
+    justify-content: stretch;
+}
+button{
+    background: transparent;
+    border: 0;
+}
+
 .matchs ul li .avatar{
     max-width: 100%;
     height: 106.66px;
@@ -34,34 +49,81 @@
     transform: translate3d(0px, -3px, 0px);
     transition: all 0.2s;
 }
-.matchs ul li .github{
-    max-width: 4%;
-    margin-left: 1%;
+.matchs ul li .x{
+    max-width: 20px;
     cursor: pointer;
+    margin-left: 10px;
+    justify-items: end;
+}
+.matchs ul li .x:hover{
+    transform: translate3d(0px, -3px, 0px);
+    transition: all 0.2s;
+}
+.matchs ul li .github{
+    max-width: 20px;
+    cursor: pointer;
+    margin-left: 10px;
 }
 .matchs ul li .github:hover{
     transform: translate3d(0px, -3px, 0px);
     transition: all 0.2s;
 }
-
+.matchs ul li .linkedin{
+    max-width: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.matchs ul li .linkedin:hover{
+    transform: translate3d(0px, -3px, 0px);
+    transition: all 0.2s;
+}
+.matchs ul li .whatsapp{
+    max-width: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.matchs ul li .whatsapp:hover{
+    transform: translate3d(0px, -3px, 0px);
+    transition: all 0.2s;
+}
 .matchs ul li footer{
+    max-width: 590px;
     flex: 1;
     background: #ffff;
     border:  1px solid #eee;
-    padding: 15px 20px;
+    padding: 5px 0 0 10px;
     text-align: left;
-    border-radius: 5px;
+    border-radius: 5px;    
 }
 
-.matchs ul li footer strong{
-    font-size:  16px;
-    color: #333;
-    display: flex;
-}
 
 .matchs ul li footer p {
     font-size: 14px;
     line-height: 20px;
     color: #999;
     margin-top: 5px;
+}
+
+@media only screen and (max-device-width: 700px){
+    .matchs ul li footer strong{
+        grid-template-columns: 120px 10px 10px 10px 50px;
+        justify-content: space-between;
+    }
+    .matchs ul li .whatsapp{
+        max-width: 18px;
+        cursor: pointer;
+    }
+    .matchs ul li .x{
+        max-width: 15px;
+        cursor: pointer;
+        margin-left: 55%;
+    }
+    .matchs ul li .github{
+        max-width: 15px;
+        cursor: pointer;
+    }
+    .matchs ul li .linkedin{
+        max-width: 15px;
+        cursor: pointer;
+    }
 }
