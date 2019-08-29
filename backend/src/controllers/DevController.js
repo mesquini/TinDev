@@ -3,6 +3,13 @@ const dev = require('../models/Dev')
 
 module.exports = {
 
+    async loggeDev(req, res){
+        const { user } = req.headers
+
+        const loggeDev = await dev.findById(user)
+
+    return res.json(loggeDev)
+    },
     async index(req, res){
         const { user } = req.headers
 
@@ -32,11 +39,11 @@ module.exports = {
 
         var {name, bio, avatar_url : avatar, html_url : url_github, company, email, blog} = response
         var celular = null
-
+        
         name = (name === null ? username : name)
-        bio = (bio === null ? 'Biografia não informada' : bio)
-        email = (email === null ? 'Email não informado' : email)
-        blog = (blog === null ? 'Blog não informado' : blog)
+        bio = (bio === null ? null : bio)
+        email = (email === null ? null : email)
+        blog = (blog === null ? null : blog)
 
         const dev_value = await dev.create({
                 name,

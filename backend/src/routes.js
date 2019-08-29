@@ -9,6 +9,7 @@ routes.get('/', (req, res) => {
     return res.json( {message : 'ola world'})
 })
 
+routes.get('/logge_dev', DevController.loggeDev)
 routes.get('/dashboard', DevController.index)
 routes.post('/dashboard', DevController.store)
 routes.delete('/dashboard/:devId', DevController.delete)

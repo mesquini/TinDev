@@ -104,6 +104,27 @@ button{
     margin-top: 5px;
 }
 
+.match-conteiner .loading-conteiner {
+    display: flex;
+    justify-content: center ;
+    align-content: center;
+    margin-top: 4%;
+}
+.match-conteiner .loading-conteiner #loading{
+    color: rgb(0, 0, 0);
+    display: none;
+}
+.match-conteiner .loading-conteiner #load{
+    display: none;
+    margin-left: 2%
+}
+.match-conteiner .empty{
+    font-size: 32px;
+    color:  #999;
+    font-weight: bold;
+    margin-top: 20%;
+}
+
 @media only screen and (max-device-width: 700px){
     .matchs ul li footer strong{
         grid-template-columns: 120px 10px 10px 10px 50px;

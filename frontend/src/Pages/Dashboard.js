@@ -5,6 +5,7 @@ import '../css/Header.css'
 import api from '../services/api'
 
 import logo from '../assets/logo.svg'
+import load from '../assets/load.svg'
 import itsamatch from '../assets/itsamatch.png'
 import like from '../assets/like.svg'
 import deslike from '../assets/dislike.svg'
@@ -15,18 +16,43 @@ import github from '../assets/github.svg'
 export default function Dashboard({match, history}){
     const [users, setUsers] = useState([])
     const [matchDev, setMatchDev] = useState(null)
-    const [user, setUser] = useState([])    
+    const [user, setUser] = useState({})    
 
     useEffect(() => {
+        var loadingEl = document.getElementById('loading')
+        var loadEl = document.getElementById('load')  
+        var noDevEl = document.getElementById('noDev') 
+
         async function loadUsers(){
+
+            await setLoading(true)
+
             const {data} = await api.get('/dashboard',{
                 headers: {user: match.params.id}
             })
+            const {data : infos} = await api.get('/logge_dev',{
+                headers: {user: match.params.id}
+            })
+
             setUsers(data.filter(user => user._id !== match.params.id))
-            setUser(data.filter(user => user._id === match.params.id))
+            setUser(infos)
             
+            await setLoading(false)
         }
         loadUsers()
+
+        async function setLoading(loading = false){      
+        
+            if(loading === true){
+                loadingEl.style.display = 'block';   
+                loadEl.style.display = 'block';  
+              } 
+              else {
+                noDevEl.style.display = 'block';
+                loadingEl.style.display = 'none'; 
+                loadEl.style.display = 'none'; 
+            } 
+        }  
     }, [match.params.id])
 
     useEffect(() => {
@@ -40,12 +66,14 @@ export default function Dashboard({match, history}){
 
     }, [match.params.id])
 
-    async function handleLike(id){
+    async function handleLike(id){   
+
         await api.post(`/dashboard/${id}/likes`, null, {
             headers : {user: match.params.id}
         })
 
         setUsers(users.filter(user => user._id !== id))
+
     }
 
     async function handleDislike(id){
@@ -66,9 +94,9 @@ export default function Dashboard({match, history}){
     return(
         <div className="">
             <header className="header">
-                <a href={user.map(user => user.url_github)} target="_blank" rel="noopener noreferrer"><img className="github" src={github} alt="github" /></a>
+                <a href={user.url_github} target="_blank" rel="noopener noreferrer"><img className="github" src={github} alt="github" /></a>
                 <button type="button" onClick={handleClickPerfil} className="btAvatar">
-                    <img src={user.map(user => user.avatar)} alt="avatar"/>
+                    <img src={user.avatar} alt="avatar"/>
                 </button>                    
                 <button type="button" onClick={handleClickMatch} className="match">
                     <img src={matchLogo} alt="match"/>
@@ -76,6 +104,10 @@ export default function Dashboard({match, history}){
             </header> 
             <div className="main-conteiner">                
                 <img src={logo} alt="logo" />
+                <div className="loading-conteiner">
+                    <strong id="loading">Carregando...</strong>
+                    <img src={load} id="load" alt="load" />
+                </div>    
                 {users.length > 0 ? (
                         <ul>
                         {users.map(user => (
@@ -86,14 +118,14 @@ export default function Dashboard({match, history}){
                                 <p>{user.bio}</p>
                             </footer>
                             <div className="buttons">
-                                <button type="button" onClick={ () => handleDislike(user._id)} ><img src={deslike} alt="deslike"></img></button>
+                                <button type="button" onClick={() => handleDislike(user._id)} ><img src={deslike} alt="deslike"></img></button>
                                 <button type="button" onClick={() => handleLike(user._id)}><img src={like} alt="like"></img></button>
                             </div>
                         </li>
                         ))}
                     </ul>
                     ) :  (
-                        <div className="empty">Acabou :(</div>
+                        <div className="empty" id="noDev" style={{display:'none'}}>Acabou :(</div>
                     ) }
                     {matchDev && (
                         <div className="match-container">

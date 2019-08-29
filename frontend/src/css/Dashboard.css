@@ -70,7 +70,6 @@
     color:  #999;
     font-weight: bold;
     margin-top: 20%;
-
 }
 
 .match-container{
@@ -116,6 +115,20 @@
 }
 .match-container button:hover{
     color: rgb(255, 0, 0);
+}
+.main-conteiner .loading-conteiner {
+    display: flex;
+    justify-content: center ;
+    align-content: center;
+    margin-top: 1%;
+}
+.main-conteiner .loading-conteiner #loading{
+    color: rgb(0, 0, 0);
+    display: none;
+}
+.main-conteiner .loading-conteiner #load{
+    display: none;
+    margin-left: 2%
 }
 
 @media only screen and (max-device-width: 700px) {    
