@@ -14,6 +14,7 @@ import "../css/Header.css";
 
 export default function Match({ match, history }) {
   const [matchs, setMatch] = useState([]);
+  const [idMatchs, setIdMatch] = useState([]);
   const [user, setUser] = useState({});
   const url_wpp = "https://api.whatsapp.com/send?phone=55";
   const text_wpp = "&text=Olá%20tudo%20bem?%20Vamos%20fazer%20um%20freela?";
@@ -28,17 +29,16 @@ export default function Match({ match, history }) {
       await setLoading(true)
 
       const { data } = await api.get(`/dashboard/${match.params.id}/match`);
+      const {users, id_matchs} = data
 
       const { data: infos } = await api.get("/logge_dev", {
         headers: { user: match.params.id }
       });
-
-      setMatch(data);
+      setMatch(users);
+      setIdMatch(id_matchs);
       setUser(infos);
-
       await setLoading(false)
     }
-
     loadMatchs();
 
     async function setLoading(loading = false){      
@@ -46,6 +46,7 @@ export default function Match({ match, history }) {
       if(loading === true){
           loadingEl.style.display = 'block';   
           loadEl.style.display = 'block';  
+          noMatchEl.style.display = 'none';
         } 
         else {
           noMatchEl.style.display = 'block';
@@ -67,11 +68,15 @@ export default function Match({ match, history }) {
     e.preventDefault();
     history.push(`/dashboard/${match.params.id}/perfil`);
   }
-  async function handleDelete(e,id) {
+  async function handleDelete(e, matchId, id) {
     e.preventDefault()
 
     if(window.confirm('Deseja deletar esse Match?')){
-      console.log(id)
+        await api.delete(`/dashboard/${match.params.id}/match`,{
+          headers: { matchId, targerid: id }
+        });
+        
+        setMatch(matchs.filter(user => user._id !== id))
     }
   }
 
@@ -101,7 +106,7 @@ export default function Match({ match, history }) {
         <div className="matchs">
           {matchs.length > 0 ? (
             <ul>
-              {matchs.map(user => (
+              {matchs.map((user, i, users) => (
                 <li key={user._id}>
                   <img className="avatar" src={user.avatar} alt="avatar" />
                   <footer>
@@ -127,7 +132,7 @@ export default function Match({ match, history }) {
                           />
                         </a>
                       ):
-                      (<a                        
+                      (<a                         
                         style={{cursor: 'default'}}                        
                       >
                         <img className="linkedin" style={{display:'none'}} src={wp} alt="wp" />
@@ -141,14 +146,13 @@ export default function Match({ match, history }) {
                           <img className="whatsapp" src={wp} alt="wp" />
                         </a>
                       ):
-                      (<a
+                      (<a 
                         style={{cursor: 'default'}}
                       >
                         <img className="whatsapp" style={{display:'none'}} src={wp} alt="wp" />
                       </a>)}
-                      <button type="button" onClick={(e) => handleDelete(e,user._id)}><img className="x" src={x} alt="delete"/></button>
-                     
-                    </strong>
+                        <button type="button" onClick={(e) => handleDelete(e,idMatchs[i],user._id)}><img className="x" src={x} alt="delete"/></button>                     
+                      </strong>
                     <p>{user.bio}</p>
                       <p>
                         {user.company} - {user.email}
@@ -158,7 +162,7 @@ export default function Match({ match, history }) {
               ))}
             </ul>
           ) : (
-            <strong className="empty" id="noMatch" style={{display:'none'}}>Você não possui Match :( </strong>
+            <strong className="empty" id="noMatch">Você não possui Match :( </strong>
           )}
         </div>
       </div>

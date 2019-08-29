@@ -45,7 +45,7 @@ export default function Login({history}){
             <form onSubmit={handleSubmit} id='repo-form'>
                 <img src={logo} alt= "tindev" />
                 <input id="username"
-                value={username}
+                value={username.toLowerCase()}
                 required = {true}
                 onChange={e => setUsername(e.target.value)}
                 placeholder="Digite seu usuario no GitHub"

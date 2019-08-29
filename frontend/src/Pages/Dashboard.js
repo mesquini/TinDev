@@ -46,6 +46,7 @@ export default function Dashboard({match, history}){
             if(loading === true){
                 loadingEl.style.display = 'block';   
                 loadEl.style.display = 'block';  
+                noDevEl.style.display = 'none';
               } 
               else {
                 noDevEl.style.display = 'block';
@@ -73,7 +74,6 @@ export default function Dashboard({match, history}){
         })
 
         setUsers(users.filter(user => user._id !== id))
-
     }
 
     async function handleDislike(id){
@@ -125,7 +125,7 @@ export default function Dashboard({match, history}){
                         ))}
                     </ul>
                     ) :  (
-                        <div className="empty" id="noDev" style={{display:'none'}}>Acabou :(</div>
+                        <div className="empty" id="noDev">Acabou :(</div>
                     ) }
                     {matchDev && (
                         <div className="match-container">

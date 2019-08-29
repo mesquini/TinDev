@@ -17,6 +17,7 @@ routes.put('/dashboard/:devId/perfil', DevController.update)
 
 routes.post('/dashboard/:devId/likes', LikeController.store)
 routes.get('/dashboard/:devId/match', LikeController.match)
+routes.delete('/dashboard/:devId/match', LikeController.delete)
 routes.post('/dashboard/:devId/dislikes', DislikesController.store)
 
 

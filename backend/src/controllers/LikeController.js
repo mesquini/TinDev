@@ -51,10 +51,33 @@ module.exports = {
             }
         }
         var users = []        
+        var id_matchs = []
         for (var i=objMatch.length-1; i>=0; i--) {             
-            const {match : id} = objMatch[i];               
-            users[i] = await dev.findOne({_id : id})           
+            const {match : id, _id : id_match} = objMatch[i];       
+            users[i] = await dev.findOne({_id : id})  
+            id_matchs[i] = id_match
         }
-        return res.json(users)
+        return res.json({users, id_matchs})
+    },
+    async delete(req, res){
+        const {devId} = req.params
+        const {matchid, targerid} = req.headers
+
+        await match.findByIdAndDelete({_id : matchid})
+        const loggeDev = await dev.findById({_id : devId})
+        const targerDev = await dev.findById({_id : targerid})
+        
+        for (var i=loggeDev.likes.length-1; i>=0; i--) {
+            if (loggeDev.likes[i] == targerid) 
+                loggeDev.likes.splice(i, 1)                 
+        }
+        await loggeDev.save()            
+        for (var i=targerDev.likes.length-1; i>=0; i--) {
+            if (targerDev.likes[i] == devId) 
+                targerDev.likes.splice(i, 1)                 
+        }
+        await targerDev.save()            
+        
+        return res.json({"Status": true})
     }
 }
