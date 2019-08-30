@@ -8,6 +8,7 @@ import logo from '../assets/logo.svg'
 import load from '../assets/load.svg'
 import itsamatch from '../assets/itsamatch.png'
 import like from '../assets/like.svg'
+import star from '../assets/star.svg'
 import deslike from '../assets/dislike.svg'
 import matchLogo from '../assets/match.svg'
 import github from '../assets/github.svg'
@@ -16,13 +17,15 @@ import github from '../assets/github.svg'
 export default function Dashboard({match, history}){
     const [users, setUsers] = useState([])
     const [matchDev, setMatchDev] = useState(null)
-    const [user, setUser] = useState({})    
+    const [infosDev, setUser] = useState({})    
 
     useEffect(() => {
         var loadingEl = document.getElementById('loading')
         var loadEl = document.getElementById('load')  
+        var load2El = document.getElementById('load2')  
         var noDevEl = document.getElementById('noDev') 
-
+        var avatarEl = document.getElementById('avatar') 
+        
         async function loadUsers(){
 
             await setLoading(true)
@@ -36,6 +39,7 @@ export default function Dashboard({match, history}){
 
             setUsers(data.filter(user => user._id !== match.params.id))
             setUser(infos)
+            console.log(infos)
             
             await setLoading(false)
         }
@@ -46,11 +50,16 @@ export default function Dashboard({match, history}){
             if(loading === true){
                 loadingEl.style.display = 'block';   
                 loadEl.style.display = 'block';  
+                load2El.style.display = 'block';  
                 noDevEl.style.display = 'none';
-              } 
-              else {
+                avatarEl.style.display = 'none';
+                
+            } 
+            else {
+                avatarEl.style.display = 'block';
                 noDevEl.style.display = 'block';
                 loadingEl.style.display = 'none'; 
+                load2El.style.display = 'none'; 
                 loadEl.style.display = 'none'; 
             } 
         }  
@@ -64,6 +73,9 @@ export default function Dashboard({match, history}){
         socket.on('match', dev =>{
             setMatchDev(dev)
         })
+        socket.on('superlike', dev =>{
+            setUser(dev)
+        })
 
     }, [match.params.id])
 
@@ -74,6 +86,14 @@ export default function Dashboard({match, history}){
         })
 
         setUsers(users.filter(user => user._id !== id))
+    }
+    async function handleSuperLike(id){   
+
+        await api.post(`/dashboard/${id}/superlikes`, null, {
+            headers : {user: match.params.id}
+        })
+
+        await setUsers(users.filter(user => user._id !== id))
     }
 
     async function handleDislike(id){
@@ -94,9 +114,10 @@ export default function Dashboard({match, history}){
     return(
         <div className="">
             <header className="header">
-                <a href={user.url_github} target="_blank" rel="noopener noreferrer"><img className="github" src={github} alt="github" /></a>
+                <a href={infosDev.url_github} target="_blank" rel="noopener noreferrer"><img className="github" src={github} alt="github" /></a>
+                    <img src={load} id="load2" alt="load" />
                 <button type="button" onClick={handleClickPerfil} className="btAvatar">
-                    <img src={user.avatar} alt="avatar"/>
+                    <img src={infosDev.avatar} id="avatar" alt="avatar"/>
                 </button>                    
                 <button type="button" onClick={handleClickMatch} className="match">
                     <img src={matchLogo} alt="match"/>
@@ -119,6 +140,12 @@ export default function Dashboard({match, history}){
                             </footer>
                             <div className="buttons">
                                 <button type="button" onClick={() => handleDislike(user._id)} ><img src={deslike} alt="deslike"></img></button>
+                                {infosDev.super_like === true ? (
+                                    <button type="button" onClick={() => handleSuperLike(user._id)}><img src={star} alt="star"></img></button>
+
+                                ) : (
+                                    <button type="button" style={{cursor: 'default', backgroundColor : 'rgba(0,0,0,0.3)'}}><img src={star} alt="star"></img></button>
+                                )}
                                 <button type="button" onClick={() => handleLike(user._id)}><img src={like} alt="like"></img></button>
                             </div>
                         </li>

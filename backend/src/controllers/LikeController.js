@@ -13,7 +13,7 @@ module.exports = {
         if(!targetDev){
             return res.status(400).json({erro: 'Dev not exists'})
         }
-        if(targetDev.likes.includes(loggeDev._id)){
+        if(targetDev.likes.includes(loggeDev._id) || targetDev.superlikes.includes(loggeDev._id)){
 
             await match.create({
                 match : [loggeDev._id, targetDev._id],
@@ -66,16 +66,28 @@ module.exports = {
         await match.findByIdAndDelete({_id : matchid})
         const loggeDev = await dev.findById({_id : devId})
         const targerDev = await dev.findById({_id : targerid})
+
+        if(loggeDev.superlikes.length > 0 || targerDev.superlikes.length > 0){
+            for (var i=loggeDev.superlikes.length-1; i>=0; i--) {
+                if (loggeDev.superlikes[i] == targerid) 
+                    loggeDev.superlikes.splice(i, 1)                 
+            }
+            for (var i=targerDev.superlikes.length-1; i>=0; i--) {
+                if (targerDev.superlikes[i] == devId) 
+                targerDev.superlikes.splice(i, 1)                 
+            }
+        }
         
         for (var i=loggeDev.likes.length-1; i>=0; i--) {
             if (loggeDev.likes[i] == targerid) 
                 loggeDev.likes.splice(i, 1)                 
         }
-        await loggeDev.save()            
         for (var i=targerDev.likes.length-1; i>=0; i--) {
             if (targerDev.likes[i] == devId) 
-                targerDev.likes.splice(i, 1)                 
+            targerDev.likes.splice(i, 1)                 
         }
+
+        await loggeDev.save()            
         await targerDev.save()            
         
         return res.json({"Status": true})

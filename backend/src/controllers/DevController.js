@@ -19,6 +19,7 @@ module.exports = {
          $and:[
              //{ _id : { $ne : user }},
              { _id : { $nin : loggeDev.likes }},
+             { _id : { $nin : loggeDev.superlikes }},
              { _id : { $nin : loggeDev.dislikes }},                
 
          ],
