@@ -38,12 +38,12 @@ module.exports = {
         const {data : response} = await axios.get(`https://api.github.com/users/${username}`)
 
         var {name, bio, avatar_url : avatar, html_url : url_github, company, email, blog} = response
-        var celular = null
+        
         
         name = (name === null ? username : name)
         bio = (bio === null ? null : bio)
         email = (email === null ? null : email)
-        blog = (blog === null ? null : blog)
+        blog = (blog === '' ? null : blog)
 
         const dev_value = await dev.create({
                 name,
@@ -54,7 +54,6 @@ module.exports = {
                 blog,
                 email,
                 url_github,
-                celular,
                 })
 
         return res.json(dev_value)

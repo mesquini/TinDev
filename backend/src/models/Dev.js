@@ -9,7 +9,18 @@ const DevSchema = new Schema({
     blog : String,
     email : String,
     url_github : String,
-    celular : String,
+    celular : {
+        type: String,
+        default: null,
+    },
+    super_like : {
+        type: Boolean,
+        default: true,
+    },
+    superlikes: [{
+        type : Schema.Types.ObjectId,
+        ref : 'Dev',
+    }],
     likes: [{
         type : Schema.Types.ObjectId,
         ref : 'Dev',
