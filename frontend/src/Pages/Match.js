@@ -22,7 +22,9 @@ export default function Match({ match, history }) {
   useEffect(() => {
     var loadingEl = document.getElementById('loading')
     var loadEl = document.getElementById('load')  
+    var load2El = document.getElementById('load2')  
     var noMatchEl = document.getElementById('noMatch')  
+    var avatarEl = document.getElementById('avatar') 
 
     async function loadMatchs() {
 
@@ -45,13 +47,17 @@ export default function Match({ match, history }) {
         
       if(loading === true){
           loadingEl.style.display = 'block';   
-          loadEl.style.display = 'block';  
+          loadEl.style.display = 'block'; 
+          load2El.style.display = 'block';  
           noMatchEl.style.display = 'none';
+          avatarEl.style.display = 'none';
         } 
         else {
+          avatarEl.style.display = 'block';
           noMatchEl.style.display = 'block';
           loadingEl.style.display = 'none'; 
           loadEl.style.display = 'none'; 
+          load2El.style.display = 'none'; 
       }     
   }
   }, [match.params.id]);
@@ -90,8 +96,9 @@ export default function Match({ match, history }) {
         >
           <img className="github" src={github} alt="github" />
         </a>
+          <img src={load} id="load2" alt="load2" />
         <button type="button" onClick={handleClickPerfil} className="btAvatar">
-          <img src={user.avatar} alt="avatar" />
+          <img src={user.avatar} id="avatar" alt="avatar"/>
         </button>
         <button type="button" onClick={handleClickMatch} className="match">
           <img src={matchLogo} alt="match" />

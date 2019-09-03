@@ -22,6 +22,11 @@
     height: 306.66px;
     border-radius: 5px 5px 0 0;
 }
+.main-conteiner ul li .star{
+    position: absolute;
+    width: 30px;
+    margin: 8px;
+}
 
 .main-conteiner ul li footer{
     flex: 1;
@@ -131,7 +136,50 @@
     display: none;
     margin-left: 2%
 }
-
+.main-conteiner .github {
+    width: 20px;
+    cursor: pointer;
+    background: none;
+    margin-right: 5px;
+} 
+.tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -60px;
+  }
+  
+  .tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+  }
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
 @media only screen and (max-device-width: 700px) {    
     .main-conteiner ul{
         list-style: none;

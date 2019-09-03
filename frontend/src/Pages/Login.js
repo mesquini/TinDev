@@ -19,6 +19,7 @@ export default function Login({history}){
         if(data.status != null){
             await setTratativas(false,true)
         }else{
+            localStorage.setItem('@login/devId', data._id)
             history.push(`/dashboard/${data._id}`)
         }
     }

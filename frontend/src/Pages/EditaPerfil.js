@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import logo from '../assets/logo.svg'
 import github from '../assets/github.svg'
 import matchLogo from '../assets/match.svg'
+import load from '../assets/load.svg'
 
 import api from '../services/api'
 
@@ -18,13 +19,33 @@ export default function EditaPerfil({match, history}){
     const [celular,  setCelular] = useState('')
     
     useEffect(() => {
+        var loadEl = document.getElementById('load')  
+        var avatarEl = document.getElementById('avatar') 
+
         async function loadUser(){
+
+            await setLoading(true)
+
             const {data} = await api.get('/logge_dev',{
                 headers: {user: match.params.id}
             })
-            setUser(data)            
+            setUser(data)        
+            await setLoading(false)    
         }
         loadUser()
+
+        async function setLoading(loading = false){      
+        
+            if(loading === true){ 
+                loadEl.style.display = 'block';  
+                avatarEl.style.display = 'none';                
+            } 
+            else {
+                avatarEl.style.display = 'block';
+                loadEl.style.display = 'none'; 
+            } 
+        }
+
     }, [match.params.id])
     
     function trataCampoNull(obj){
@@ -69,8 +90,9 @@ export default function EditaPerfil({match, history}){
         <div>
             <header className="header">
                 <a href={user.url_github} target="_blank" rel="noopener noreferrer"><img className="github" src={github} alt="github" /></a>
+                    <img src={load} id="load" alt="load" />
                 <button type="button" onClick={handleClickPerfil} className="btAvatar">
-                    <img src={user.avatar} alt="avatar"/>
+                    <img src={user.avatar} id="avatar" alt="avatar"/>
                 </button>                    
                 <button type="button" onClick={handleClickMatch} className="match">
                     <img src={matchLogo} alt="match"/>
@@ -78,8 +100,7 @@ export default function EditaPerfil({match, history}){
             </header> 
         <div className="main-container">
             <div className="edita-perfil" >
-                <img className="logo" src={logo} alt="logo" onClick={handleHome} />        
-                <img className="avatar" src={user.avatar} alt="avatar" />
+                <img className="logo" src={logo} alt="logo" onClick={handleHome} />  
                 <form onSubmit={handleSubmit}>
                     <p> Nome: <input type="text" value={name} placeholder={user.name} onChange={e => setName(e.target.value) }/></p>
                     <p> Biografia: <textarea type="text" value={bio} placeholder={user.bio}  onChange={e => setBio(e.target.value) }/></p>

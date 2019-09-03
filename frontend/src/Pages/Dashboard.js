@@ -16,6 +16,7 @@ import github from '../assets/github.svg'
 
 export default function Dashboard({match, history}){
     const [users, setUsers] = useState([])
+    const [superLike, setSuper_Likes] = useState([])
     const [matchDev, setMatchDev] = useState(null)
     const [infosDev, setUser] = useState({})    
 
@@ -25,6 +26,8 @@ export default function Dashboard({match, history}){
         var load2El = document.getElementById('load2')  
         var noDevEl = document.getElementById('noDev') 
         var avatarEl = document.getElementById('avatar') 
+        var a = localStorage.getItem('@login/devId')
+        console.log('local storage ->'+a)
         
         async function loadUsers(){
 
@@ -37,13 +40,31 @@ export default function Dashboard({match, history}){
                 headers: {user: match.params.id}
             })
 
-            setUsers(data.filter(user => user._id !== match.params.id))
-            setUser(infos)
-            console.log(infos)
+            await setUsers(data.filter(user => user._id !== match.params.id))
+            await setSuperLikes(data.filter(user => user._id !== match.params.id))
+            await setUser(infos)
             
             await setLoading(false)
         }
         loadUsers()
+
+        async function setSuperLikes(u){
+            var sLike = []
+            var cont = u.length - 1
+            u.map(user => 
+                {
+                    if(user.superlikes.length > 0){
+                        for (var i=user.superlikes.length-1; i>=0; i--) {
+                            if (user.superlikes[i] === match.params.id) {
+                                sLike[cont] = user._id      
+                                cont--      
+                            } 
+                        }   
+                    }
+                }) 
+                console.log(sLike)
+            setSuper_Likes(sLike)          
+        }
 
         async function setLoading(loading = false){      
         
@@ -109,7 +130,7 @@ export default function Dashboard({match, history}){
     async function handleClickPerfil(e){
         e.preventDefault()     
         history.push(`/dashboard/${match.params.id}/perfil`)        
-    }
+    }   
 
     return(
         <div className="">
@@ -134,8 +155,22 @@ export default function Dashboard({match, history}){
                         {users.map(user => (
                         <li key={user._id}>                    
                             <img className="avatar" src={user.avatar} alt="avatar"/>
+                            {superLike.length > 0 && (
+                                superLike.map(s => (
+                                    s === user._id &&(
+                                        <img className="star" placeholder="teste" key={s} src={star} alt="star"/>
+                                    )
+                                ))
+                            )}
                             <footer>
-                                <strong>{user.name}</strong>
+                                <strong>
+                                    <a href={user.url_github} className="tooltip">
+                                        <span className="tooltiptext">GitHub</span>
+                                        <img className="github" src={github} alt="github"/>
+                                    </a> 
+                                {user.name} 
+                                </strong>
+                                
                                 <p>{user.bio}</p>
                             </footer>
                             <div className="buttons">
