@@ -42,9 +42,10 @@ module.exports = {
         
         
         name = (!name ? username : name)
-        bio = (!bio ? null : bio)
-        email = (!email ? null : email)
-        blog = (!blog ? null : blog)
+        bio = (!bio ? '' : bio)
+        email = (!email ? '' : email)
+        blog = (!blog ? '' : blog)
+        company = (!company ? '' : company)
 
         const dev_value = await dev.create({
                 name,

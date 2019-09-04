@@ -11,7 +11,7 @@ const DevSchema = new Schema({
     url_github : String,
     celular : {
         type: String,
-        default: null,
+        default: '',
     },
     super_like : {
         type: Boolean,
