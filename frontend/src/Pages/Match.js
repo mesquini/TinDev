@@ -18,6 +18,7 @@ export default function Match({ match, history }) {
   const [user, setUser] = useState({});
   const url_wpp = "https://api.whatsapp.com/send?phone=55";
   const text_wpp = "&text=Olá%20tudo%20bem?%20Vamos%20fazer%20um%20freela?";
+  var devId = localStorage.getItem('@login/devId')
   
   useEffect(() => {
     var loadingEl = document.getElementById('loading')
@@ -29,16 +30,19 @@ export default function Match({ match, history }) {
     async function loadMatchs() {
 
       await setLoading(true)
-
-      const { data } = await api.get(`/dashboard/${match.params.id}/match`);
+      const { data } = await api.get(`/match`,{
+        headers : {user : devId}
+      });
       const {users, id_matchs} = data
 
       const { data: infos } = await api.get("/logge_dev", {
-        headers: { user: match.params.id }
+        headers: { user: devId }
       });
+
       setMatch(users);
       setIdMatch(id_matchs);
       setUser(infos);
+
       await setLoading(false)
     }
     loadMatchs();
@@ -60,25 +64,25 @@ export default function Match({ match, history }) {
           load2El.style.display = 'none'; 
       }     
   }
-  }, [match.params.id]);
+  }, [devId]);
 
 
   async function handleMain() {
-    await history.push(`/dashboard/${match.params.id}`);
+    await history.push(`/dashboard`);
   }
   async function handleClickMatch(e) {
     e.preventDefault();
-    history.push(`/dashboard/${match.params.id}/match`);
+    history.push(`/match`);
   }
   async function handleClickPerfil(e) {
     e.preventDefault();
-    history.push(`/dashboard/${match.params.id}/perfil`);
+    history.push(`/perfil`);
   }
   async function handleDelete(e, matchId, id) {
     e.preventDefault()
 
     if(window.confirm('Deseja deletar esse Match?')){
-        await api.delete(`/dashboard/${match.params.id}/match`,{
+        await api.delete(`/dashboard/${devId}/match`,{
           headers: { matchId, targerid: id }
         });
         

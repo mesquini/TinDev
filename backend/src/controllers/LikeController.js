@@ -36,16 +36,16 @@ module.exports = {
         return res.json(loggeDev)
     },
     async match(req, res){
-        const { devId } = req.params
+        const { user } = req.headers
 
-        const objMatch = await match.find({match : devId})
+        const objMatch = await match.find({match : user})
 
         for (const key in objMatch) {
             if  (objMatch.hasOwnProperty(key)) {
                 const {match : id} = objMatch[key];
 
                 for (var i=id.length-1; i>=0; i--) {
-                    if (id[i] == devId) 
+                    if (id[i] == user) 
                         id.splice(i, 1);                    
                 }
             }

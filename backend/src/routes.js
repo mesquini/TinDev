@@ -14,14 +14,14 @@ routes.get('/', (req, res) => {
 routes.get('/dashboard', DevController.index)
 routes.get('/logge_dev', DevController.loggeDev)
 routes.post('/dashboard', DevController.store)
-routes.delete('/dashboard/:devId', DevController.delete)
-routes.put('/dashboard/:devId/perfil', DevController.update)
+//routes.delete('/dashboard/:devId', DevController.delete)
+routes.put('/perfil', DevController.update)
 
 routes.post('/dashboard/:devId/likes', LikeController.store)
 routes.post('/dashboard/:devId/superlikes', SuperLikeController.store)
 routes.post('/dashboard/:devId/dislikes', DislikesController.store)
 
-routes.get('/dashboard/:devId/match', LikeController.match)
+routes.get('/match', LikeController.match)
 routes.delete('/dashboard/:devId/match', LikeController.delete)
 
 

@@ -10,9 +10,9 @@ export default function Routes(){
     return(
         <BrowserRouter>
             <Route path="/" exact component = {login}/>
-            <Route path="/dashboard/:id" exact component = {dashboard}/>
-            <Route path="/dashboard/:id/match" exact component = {match}/>
-            <Route path="/dashboard/:id/perfil" exact component = {editaPerfil}/>
+            <Route path="/dashboard" exact component = {dashboard}/>
+            <Route path="/match" exact component = {match}/>
+            <Route path="/perfil" exact component = {editaPerfil}/>
         </BrowserRouter>
     )
 }

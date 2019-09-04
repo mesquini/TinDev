@@ -20,7 +20,7 @@ export default function Login({history}){
             await setTratativas(false,true)
         }else{
             localStorage.setItem('@login/devId', data._id)
-            history.push(`/dashboard/${data._id}`)
+            history.push(`/dashboard/`)
         }
     }
 

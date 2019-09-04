@@ -19,6 +19,7 @@ export default function Dashboard({match, history}){
     const [superLike, setSuper_Likes] = useState([])
     const [matchDev, setMatchDev] = useState(null)
     const [infosDev, setUser] = useState({})    
+    var devId = localStorage.getItem('@login/devId')
 
     useEffect(() => {
         var loadingEl = document.getElementById('loading')
@@ -26,22 +27,20 @@ export default function Dashboard({match, history}){
         var load2El = document.getElementById('load2')  
         var noDevEl = document.getElementById('noDev') 
         var avatarEl = document.getElementById('avatar') 
-        var a = localStorage.getItem('@login/devId')
-        console.log('local storage ->'+a)
         
         async function loadUsers(){
 
             await setLoading(true)
 
             const {data} = await api.get('/dashboard',{
-                headers: {user: match.params.id}
+                headers: {user: devId}
             })
             const {data : infos} = await api.get('/logge_dev',{
-                headers: {user: match.params.id}
+                headers: {user: devId}
             })
 
-            await setUsers(data.filter(user => user._id !== match.params.id))
-            await setSuperLikes(data.filter(user => user._id !== match.params.id))
+            await setUsers(data.filter(user => user._id !== devId))
+            await setSuperLikes(data.filter(user => user._id !== devId))
             await setUser(infos)
             
             await setLoading(false)
@@ -55,14 +54,13 @@ export default function Dashboard({match, history}){
                 {
                     if(user.superlikes.length > 0){
                         for (var i=user.superlikes.length-1; i>=0; i--) {
-                            if (user.superlikes[i] === match.params.id) {
+                            if (user.superlikes[i] === devId) {
                                 sLike[cont] = user._id      
                                 cont--      
                             } 
                         }   
                     }
-                }) 
-                console.log(sLike)
+            }) 
             setSuper_Likes(sLike)          
         }
 
@@ -84,11 +82,11 @@ export default function Dashboard({match, history}){
                 loadEl.style.display = 'none'; 
             } 
         }  
-    }, [match.params.id])
+    }, [devId])
 
     useEffect(() => {
         const socket = io(process.env.REACT_APP_API_URL || 'http://localhost:3333', {query : {
-            user : match.params.id
+            user : devId
         }})
 
         socket.on('match', dev =>{
@@ -98,12 +96,12 @@ export default function Dashboard({match, history}){
             setUser(dev)
         })
 
-    }, [match.params.id])
+    }, [devId])
 
     async function handleLike(id){   
 
         await api.post(`/dashboard/${id}/likes`, null, {
-            headers : {user: match.params.id}
+            headers : {user: devId}
         })
 
         setUsers(users.filter(user => user._id !== id))
@@ -111,25 +109,24 @@ export default function Dashboard({match, history}){
     async function handleSuperLike(id){   
 
         await api.post(`/dashboard/${id}/superlikes`, null, {
-            headers : {user: match.params.id}
+            headers : {user: devId}
         })
 
         await setUsers(users.filter(user => user._id !== id))
     }
-
     async function handleDislike(id){
         await api.post(`/dashboard/${id}/dislikes`, null, {
-            headers : {user: match.params.id}
+            headers : {user: devId}
         })
         setUsers(users.filter(user => user._id !== id))
     }
     async function handleClickMatch(e){
         e.preventDefault()     
-        history.push(`/dashboard/${match.params.id}/match`)        
+        history.push(`/match`)        
     }
     async function handleClickPerfil(e){
         e.preventDefault()     
-        history.push(`/dashboard/${match.params.id}/perfil`)        
+        history.push(`/perfil`)        
     }   
 
     return(
@@ -158,13 +155,13 @@ export default function Dashboard({match, history}){
                             {superLike.length > 0 && (
                                 superLike.map(s => (
                                     s === user._id &&(
-                                        <img className="star" placeholder="teste" key={s} src={star} alt="star"/>
+                                        <img className="star" placeholder="teste" key={s} title="Super Like" src={star} alt="star"/>
                                     )
                                 ))
                             )}
                             <footer>
                                 <strong>
-                                    <a href={user.url_github} className="tooltip">
+                                    <a href={user.url_github} target="_blank" rel="noopener noreferrer" className="tooltip">
                                         <span className="tooltiptext">GitHub</span>
                                         <img className="github" src={github} alt="github"/>
                                     </a> 

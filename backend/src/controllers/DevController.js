@@ -41,10 +41,10 @@ module.exports = {
         var {name, bio, avatar_url : avatar, html_url : url_github, company, email, blog} = response
         
         
-        name = (name === null ? username : name)
-        bio = (bio === null ? null : bio)
-        email = (email === null ? null : email)
-        blog = (blog === '' ? null : blog)
+        name = (!name ? username : name)
+        bio = (!bio ? null : bio)
+        email = (!email ? null : email)
+        blog = (!blog ? null : blog)
 
         const dev_value = await dev.create({
                 name,
@@ -72,11 +72,10 @@ module.exports = {
         return res.json({'Status' : 'Usuario deletado com sucesso'})
     }  ,
     async update(req, res) {
-        const  {devId} = req.params
-
+        const {user} = req.headers
         const update = req.body
 
-        await dev.findOneAndUpdate({_id : devId}, update)
+        await dev.findByIdAndUpdate({_id : user}, update, {upsert : true})
 
         return res.json({status : "Alterado com sucesso!"})
     }  

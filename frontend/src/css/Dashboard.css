@@ -194,5 +194,8 @@
     .main-conteiner ul li .avatar{
         height: 156.66px;
     }
+    .main-conteiner ul li .buttons{
+        grid-gap: 5px;
+    }
     
 }

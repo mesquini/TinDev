@@ -10,6 +10,7 @@ import '../css/EditaPerfil.css'
 import '../css/Header.css'
 
 export default function EditaPerfil({match, history}){
+    var devId = localStorage.getItem('@login/devId')
     const [user, setUser] = useState({})
     const [name, setName] = useState('')
     const [bio, setBio] = useState('')
@@ -27,7 +28,7 @@ export default function EditaPerfil({match, history}){
             await setLoading(true)
 
             const {data} = await api.get('/logge_dev',{
-                headers: {user: match.params.id}
+                headers: {user: devId}
             })
             setUser(data)        
             await setLoading(false)    
@@ -46,20 +47,20 @@ export default function EditaPerfil({match, history}){
             } 
         }
 
-    }, [match.params.id])
+    }, [devId])
     
     function trataCampoNull(obj){
-        if(obj.name === '')
+        if(!obj.name)
             obj.name = user.name.toString()
-        if(obj.bio === "")
+        if(!obj.bio)
             obj.bio = user.bio.toString()
-        if(obj.company === null)
+        if(!obj.company)
             obj.company = user.company.toString()
-        if(obj.blog === null)
+        if(!obj.blog)
             obj.blog = user.blog.toString()
-        if(obj.email === null)
+        if(!obj.email)
             obj.email = user.email.toString()   
-        if(obj.celular === null)
+        if(!obj.celular)
             obj.celular = user.celular.toString()  
     }
     
@@ -69,21 +70,23 @@ export default function EditaPerfil({match, history}){
         
         await trataCampoNull(update)
         
-        await api.put(`/dashboard/${match.params.id}/perfil`, update)
+        await api.put(`/perfil`, update, {
+            headers: {user: devId}
+        })
         
-        history.push(`/dashboard/${match.params.id}`)
+        history.push(`/dashboard`)
     }
     
     function handleHome(){
-        history.push(`/dashboard/${match.params.id}`)
+        history.push(`/dashboard`)
     }
     async function handleClickMatch(e){
         e.preventDefault()     
-        history.push(`/dashboard/${match.params.id}/match`)        
+        history.push(`/match`)        
     }
     async function handleClickPerfil(e){
         e.preventDefault()     
-        history.push(`/dashboard/${match.params.id}/perfil`)        
+        history.push(`/perfil`)        
     }
     
     return(
