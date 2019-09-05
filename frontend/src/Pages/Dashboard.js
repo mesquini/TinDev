@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import io from 'socket.io-client'
-import '../css/Dashboard.css'
-import '../css/Header.css'
 import api from '../services/api'
+
+import '../css/Dashboard.css'
 
 import logo from '../assets/logo.svg'
 import load from '../assets/load.svg'
@@ -10,8 +10,9 @@ import itsamatch from '../assets/itsamatch.png'
 import like from '../assets/like.svg'
 import star from '../assets/star.svg'
 import deslike from '../assets/dislike.svg'
-import matchLogo from '../assets/match.svg'
 import github from '../assets/github.svg'
+
+import Header from '../Pages/Header'
 
 
 export default function Dashboard({match, history}){
@@ -23,10 +24,8 @@ export default function Dashboard({match, history}){
 
     useEffect(() => {
         var loadingEl = document.getElementById('loading')
-        var loadEl = document.getElementById('load')  
-        var load2El = document.getElementById('load2')  
+        var loadEl = document.getElementById('load')   
         var noDevEl = document.getElementById('noDev') 
-        var avatarEl = document.getElementById('avatar') 
         
         async function loadUsers(){
 
@@ -58,7 +57,7 @@ export default function Dashboard({match, history}){
                                 sLike[cont] = user._id      
                                 cont--      
                             } 
-                        }   
+                        }  
                     }
             }) 
             setSuper_Likes(sLike)          
@@ -69,16 +68,12 @@ export default function Dashboard({match, history}){
             if(loading === true){
                 loadingEl.style.display = 'block';   
                 loadEl.style.display = 'block';  
-                load2El.style.display = 'block';  
                 noDevEl.style.display = 'none';
-                avatarEl.style.display = 'none';
                 
             } 
             else {
-                avatarEl.style.display = 'block';
                 noDevEl.style.display = 'block';
                 loadingEl.style.display = 'none'; 
-                load2El.style.display = 'none'; 
                 loadEl.style.display = 'none'; 
             } 
         }  
@@ -120,27 +115,10 @@ export default function Dashboard({match, history}){
         })
         setUsers(users.filter(user => user._id !== id))
     }
-    async function handleClickMatch(e){
-        e.preventDefault()     
-        history.push(`/match`)        
-    }
-    async function handleClickPerfil(e){
-        e.preventDefault()     
-        history.push(`/perfil`)        
-    }   
 
     return(
-        <div className="">
-            <header className="header">
-                <a href={infosDev.url_github} target="_blank" rel="noopener noreferrer"><img className="github" src={github} alt="github" /></a>
-                    <img src={load} id="load2" alt="load" />
-                <button type="button" onClick={handleClickPerfil} className="btAvatar">
-                    <img src={infosDev.avatar} id="avatar" alt="avatar"/>
-                </button>                    
-                <button type="button" onClick={handleClickMatch} className="match">
-                    <img src={matchLogo} alt="match"/>
-                </button>                        
-            </header> 
+        <div>
+            <Header history= {history}/>
             <div className="main-conteiner">                
                 <img src={logo} alt="logo" />
                 <div className="loading-conteiner">
@@ -155,7 +133,7 @@ export default function Dashboard({match, history}){
                             {superLike.length > 0 && (
                                 superLike.map(s => (
                                     s === user._id &&(
-                                        <img className="star" placeholder="teste" key={s} title="Super Like" src={star} alt="star"/>
+                                        <img className="star" placeholder="teste" key={s} title="Super Like" src={star} alt="star"/>                                            
                                     )
                                 ))
                             )}
@@ -171,14 +149,18 @@ export default function Dashboard({match, history}){
                                 <p>{user.bio}</p>
                             </footer>
                             <div className="buttons">
-                                <button type="button" onClick={() => handleDislike(user._id)} ><img src={deslike} alt="deslike"></img></button>
+                                <button className="tooltip" type="button" onClick={() => handleDislike(user._id)} ><img src={deslike} alt="deslike"></img>
+                                <span className="tooltiptext">Deslike</span></button>
                                 {infosDev.super_like === true ? (
-                                    <button type="button" onClick={() => handleSuperLike(user._id)}><img src={star} alt="star"></img></button>
+                                    <button className="tooltip" type="button" onClick={() => handleSuperLike(user._id)}><img src={star} alt="star"></img>
+                                    <span className="tooltiptext">Super Like</span></button>
 
                                 ) : (
-                                    <button type="button" style={{cursor: 'default', backgroundColor : 'rgba(0,0,0,0.3)'}}><img src={star} alt="star"></img></button>
+                                    <button className="tooltip" type="button" style={{cursor: 'default', backgroundColor : 'rgba(0,0,0,0.3)'}}><img src={star} alt="star"></img>
+                                    <span className="tooltiptext">Super Like</span></button>
                                 )}
-                                <button type="button" onClick={() => handleLike(user._id)}><img src={like} alt="like"></img></button>
+                                <button className="tooltip" type="button" onClick={() => handleLike(user._id)}><img src={like} alt="like"></img>
+                                <span className="tooltiptext">Like</span></button>
                             </div>
                         </li>
                         ))}

@@ -1,13 +1,12 @@
 import React, {useState, useEffect} from 'react'
+import InputMask from 'react-input-mask'
+
 import logo from '../assets/logo.svg'
-import github from '../assets/github.svg'
-import matchLogo from '../assets/match.svg'
-import load from '../assets/load.svg'
 
 import api from '../services/api'
+import Header from '../Pages/Header'
 
 import '../css/EditaPerfil.css'
-import '../css/Header.css'
 
 export default function EditaPerfil({match, history}){
     var devId = localStorage.getItem('@login/devId')
@@ -20,87 +19,56 @@ export default function EditaPerfil({match, history}){
     const [celular,  setCelular] = useState('')
     
     useEffect(() => {
-        var loadEl = document.getElementById('load')  
-        var avatarEl = document.getElementById('avatar') 
-
+        
         async function loadUser(){
-
-            await setLoading(true)
 
             const {data} = await api.get('/logge_dev',{
                 headers: {user: devId}
             })
-            setUser(data)        
-            await setLoading(false)    
+            setUser(data)            
         }
         loadUser()
 
-        async function setLoading(loading = false){      
-        
-            if(loading === true){ 
-                loadEl.style.display = 'block';  
-                avatarEl.style.display = 'none';                
-            } 
-            else {
-                avatarEl.style.display = 'block';
-                loadEl.style.display = 'none'; 
-            } 
-        }
 
     }, [devId])
     
     function trataCampoNull(obj){
         if(!obj.name)
-            obj.name = user.name.toString()
+            obj.name = user.name
         if(!obj.bio)
-            obj.bio = user.bio.toString()
+            obj.bio = user.bio
         if(!obj.company)
-            obj.company = user.company.toString()
+            obj.company = user.company
         if(!obj.blog)
-            obj.blog = user.blog.toString()
+            obj.blog = user.blog
         if(!obj.email)
-            obj.email = user.email.toString()   
+            obj.email = user.email  
         if(!obj.celular)
-            obj.celular = user.celular.toString()  
+            obj.celular = user.celular  
     }
     
     async function handleSubmit(e){
         e.preventDefault() 
         const update = {name, bio, company, blog, email, celular}
-        
+       
         await trataCampoNull(update)
         
         await api.put(`/perfil`, update, {
             headers: {user: devId}
         })
         
-        history.push(`/dashboard`)
+        handleHome()
     }
     
     function handleHome(){
         history.push(`/dashboard`)
     }
-    async function handleClickMatch(e){
-        e.preventDefault()     
-        history.push(`/match`)        
-    }
-    async function handleClickPerfil(e){
-        e.preventDefault()     
-        history.push(`/perfil`)        
-    }
     
     return(
         <div>
-            <header className="header">
-                <a href={user.url_github} target="_blank" rel="noopener noreferrer"><img className="github" src={github} alt="github" /></a>
-                    <img src={load} id="load" alt="load" />
-                <button type="button" onClick={handleClickPerfil} className="btAvatar">
-                    <img src={user.avatar} id="avatar" alt="avatar"/>
-                </button>                    
-                <button type="button" onClick={handleClickMatch} className="match">
-                    <img src={matchLogo} alt="match"/>
-                </button>                        
-            </header> 
+
+            <Header history={history} />
+
         <div className="main-container">
             <div className="edita-perfil" >
                 <img className="logo" src={logo} alt="logo" onClick={handleHome} />  
@@ -110,10 +78,11 @@ export default function EditaPerfil({match, history}){
                     <p> Empresa: <input type="text" value={company} placeholder={user.company} onChange={e => setCompany(e.target.value) }/></p>
                     <p> Linkedin: <input type="text" value={blog} placeholder={user.blog}  onChange={e => setBlog(e.target.value) }/> </p>  
                     <p> Email: <input type="text" value={email} placeholder={user.email} onChange={e => setEmail(e.target.value) }/></p>
-                    {user.celular !== null ?
-                    (<p> WhatsApp: <input type="text" value={celular} placeholder={user.celular} maxLength={12}  onChange={e => setCelular(e.target.value) }/></p>
+                    
+                    {user.celular ?
+                    (<p> WhatsApp: <InputMask type="text" mask="(99)99999-9999" value={celular} placeholder={user.celular} onChange={e => setCelular(e.target.value) } maskChar={null} /></p>
                     ):(
-                    <p> WhatsApp: <input type="text" value={celular} placeholder='DDDNNNNNNNNN' maxLength={12}  onChange={e => setCelular(e.target.value) }/></p>
+                    <p> WhatsApp: <InputMask type="text" mask="(99)99999-9999" value={celular} placeholder='DDDNNNNNNNNN' onChange={e => setCelular(e.target.value) } maskChar={null}/></p>
                         )}
                     
                     <button type="submit">Salvar</button>     

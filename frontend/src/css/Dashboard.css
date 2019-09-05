@@ -150,14 +150,14 @@
   .tooltip .tooltiptext {
     visibility: hidden;
     width: 120px;
-    background-color: black;
+    background-color: rgba(0,0,0,0.8);
     color: #fff;
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
     position: absolute;
     z-index: 1;
-    bottom: 150%;
+    bottom: 120%;
     left: 50%;
     margin-left: -60px;
   }
@@ -177,9 +177,6 @@
     opacity: 1;
   }
   
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-  }
 @media only screen and (max-device-width: 700px) {    
     .main-conteiner ul{
         list-style: none;
