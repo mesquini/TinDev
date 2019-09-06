@@ -6,9 +6,6 @@ import matchLogo from '../assets/match.svg'
 
 import "../css/Header.css";
 
-
-
-
 export default function Header({match, history }) {
     const [user, setUser] = useState({});
     var devId = localStorage.getItem('@login/devId')
@@ -61,14 +58,14 @@ export default function Header({match, history }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img className="github" src={github} alt="github" />
+          <img className="github" src={github} alt="github" title="GitHub" />
         </a>
           <img src={load} id="load2" alt="load2" />
         <button type="button" onClick={handleClickPerfil} className="btAvatar">
-          <img src={user.avatar} id="avatar" alt="avatar"/>
+          <img src={user.avatar} id="avatar" alt="avatar" title="Editar Pefil"/>
         </button>
         <button type="button" onClick={handleClickMatch} className="match">
-          <img src={matchLogo} alt="match" />
+          <img src={matchLogo} alt="match" title="Seus matchs" />
         </button>
       </header>
     )
