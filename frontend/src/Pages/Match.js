@@ -73,10 +73,9 @@ export default function Match({ match, history }) {
         setMatch(matchs.filter(user => user._id !== id))
     }
   }
-
+  
   return (
-    <div>
-      
+    <div>      
       <Header history={history} />
 
       <div className="match-conteiner">

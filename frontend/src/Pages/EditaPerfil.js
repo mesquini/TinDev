@@ -83,14 +83,12 @@ export default function EditaPerfil({match, history}){
                     (<p> WhatsApp: <InputMask type="text" mask="(99)99999-9999" value={celular} placeholder={user.celular} onChange={e => setCelular(e.target.value) } maskChar={null} /></p>
                     ):(
                     <p> WhatsApp: <InputMask type="text" mask="(99)99999-9999" value={celular} placeholder='DDDNNNNNNNNN' onChange={e => setCelular(e.target.value) } maskChar={null}/></p>
-                        )}
-                    
+                        )}                    
                     <button type="submit">Salvar</button>     
                 </form>         
             </div>
         </div>   
-        
-        </div>     
+    </div>     
     );    
 }
 
