@@ -37,6 +37,8 @@ export default function Dashboard({match, history}){
             const {data : infos} = await api.get('/logge_dev',{
                 headers: {user: devId}
             })
+            
+            await random(data)
 
             await setUsers(data.filter(user => user._id !== devId))
             await setSuperLikes(data.filter(user => user._id !== devId))
@@ -45,6 +47,15 @@ export default function Dashboard({match, history}){
             await setLoading(false)
         }
         loadUsers()
+
+        async function random(array){
+            for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+        }
 
         async function setSuperLikes(u){
             var sLike = []
