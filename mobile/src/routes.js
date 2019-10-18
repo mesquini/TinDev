@@ -1,11 +1,11 @@
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 
-import Login from "./pages/login";
-import Dashboard from "./pages/main";
+import login from "./pages/login";
+import main from "./pages/main";
+import perfil from "./pages/perfil";
 
-const mainNavigation = createSwitchNavigator({
-  Login,
-  Dashboard
-});
-
-export default createAppContainer(mainNavigation);
+export default createAppContainer( createSwitchNavigator({
+  login,
+  main,
+  perfil
+}));

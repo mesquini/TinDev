@@ -56,7 +56,7 @@ export default function Main({ navigation }) {
         headers: { user: id }
       });
 
-      setMatchDev(own);
+      //setMatchDev(own);
       setOwner(own);
     }
     loadUsers();
@@ -117,9 +117,9 @@ export default function Main({ navigation }) {
   }
 
   async function handleLogout() {
-    await AsyncStorage.clear();
+    //await AsyncStorage.clear();
 
-    navigation.navigate("login");
+    await navigation.navigate("perfil", {owner})
   }
 
   return (
@@ -127,7 +127,7 @@ export default function Main({ navigation }) {
       <TouchableOpacity onPress={handleLogout}>
         <Image style={styles.logo} source={logo} />
       </TouchableOpacity>
-      
+
       <View style={styles.cardsContainer}>
         {users.lenght === 0 ? (
           <Text style={styles.empty}>Acabou :(</Text>

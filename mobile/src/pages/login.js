@@ -25,7 +25,9 @@ export default function Login({ navigation }) {
   }, []);
 
   async function handleLogin() {
-    const { data } = await api.post("/dashboard/", { username: user.toLowerCase() });
+    const { data } = await api.post("/dashboard/", {
+      username: user.toLowerCase()
+    });
 
     await AsyncStorage.setItem("user", data._id);
 
