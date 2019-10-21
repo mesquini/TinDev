@@ -8,7 +8,8 @@ import {
   Image,
   StyleSheet,
   AsyncStorage,
-  Linking
+  Linking,
+  ActivityIndicator
 } from "react-native";
 
 import api from "../services/api";
@@ -43,6 +44,8 @@ export default function Main({ navigation }) {
 
   useEffect(() => {
     async function loadUsers() {
+      console.log(`main ${id}`);
+
       const { data } = await api.get("/dashboard", {
         headers: { user: id }
       });
@@ -58,6 +61,8 @@ export default function Main({ navigation }) {
 
       //setMatchDev(own);
       setOwner(own);
+      await AsyncStorage.setItem('own', owner)
+      console.log(owner);
     }
     loadUsers();
 
@@ -116,18 +121,15 @@ export default function Main({ navigation }) {
     setUsers(rest);
   }
 
-  async function handleLogout() {
-    //await AsyncStorage.clear();
-
-    await navigation.navigate("perfil", {owner})
+  async function handleHome() {
+    await navigation.navigate("Home", { user: owner._id });
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={handleLogout}>
+      <TouchableOpacity onPress={handleHome}>
         <Image style={styles.logo} source={logo} />
       </TouchableOpacity>
-
       <View style={styles.cardsContainer}>
         {users.lenght === 0 ? (
           <Text style={styles.empty}>Acabou :(</Text>

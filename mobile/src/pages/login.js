@@ -18,8 +18,10 @@ export default function Login({ navigation }) {
 
   useEffect(() => {
     AsyncStorage.getItem("user").then(user => {
+      console.log(user);
+
       if (user) {
-        navigation.navigate("main", { user });
+        navigation.navigate("Home", { user });
       }
     });
   }, []);
@@ -31,7 +33,8 @@ export default function Login({ navigation }) {
 
     await AsyncStorage.setItem("user", data._id);
 
-    navigation.navigate("main", { user: data._id });
+    navigation.navigate("Home", { user: data._id });
+    navigation.navigate({ Param: { user: data._id } });
   }
 
   return (

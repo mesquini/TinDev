@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import {
-  View,
+  Alert,
   TouchableOpacity,
   KeyboardAvoidingView,
   Text,
   Image,
   StyleSheet,
-  AsyncStorage,
-  Form,
-  TextInput
+  TextInput,
+  ScrollView,
+  AsyncStorage
 } from "react-native";
 import api from "../services/api";
 
 import logo from "../assets/logo.png";
-import { SafeAreaView } from "react-navigation";
 
 export default function Perfil({ navigation }) {
   const [name, setName] = useState("");
@@ -22,7 +21,21 @@ export default function Perfil({ navigation }) {
   const [blog, setBlog] = useState("");
   const [email, setEmail] = useState("");
   const [celular, setCelular] = useState("");
-  const user = navigation.getParam("owner");
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    async function loadInfo() {
+      console.log('perfil');
+      
+      await AsyncStorage.then(info => {
+        if (info) setUser(info);
+        else navigation.navigate("Sair");
+      });
+
+      console.log(`perfil ${info._id}`);
+    }
+    loadInfo();
+  }, []);
 
   async function trataCampoNull(obj) {
     if (!obj.name) obj.name = user.name;
@@ -32,28 +45,29 @@ export default function Perfil({ navigation }) {
     if (!obj.email) obj.email = user.email;
     if (!obj.celular) obj.celular = user.celular;
   }
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit() {
     const update = { name, bio, company, blog, email, celular };
 
     await trataCampoNull(update);
 
     await api.put(`/perfil`, update, {
-      headers: { user: devId }
+      headers: { user: user._id }
     });
+
+    Alert.alert("Perfil alterado com sucesso!");
 
     handleHome();
   }
 
   function handleHome() {
-    navigation.navigate("main", { user: user._id});
+    navigation.navigate("Home", { user: user._id });
   }
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <TouchableOpacity onPress={handleHome}>
-          <Image style={styles.logo} source={logo} />
-        </TouchableOpacity>
-      <SafeAreaView>
+      <TouchableOpacity onPress={handleHome}>
+        <Image style={styles.logo} source={logo} />
+      </TouchableOpacity>
+      <ScrollView>
         <Text style={styles.text}>Nome</Text>
         <TextInput
           style={styles.input}
@@ -92,8 +106,8 @@ export default function Perfil({ navigation }) {
           style={styles.input}
           value={email}
           onChangeText={setEmail}
-          autoCompleteType='email'
-          keyboardType='email-address'
+          autoCompleteType="email"
+          keyboardType="email-address"
           placeholderTextColor="#999"
           placeholder={user.email}
         />
@@ -101,14 +115,14 @@ export default function Perfil({ navigation }) {
         <TextInput
           style={styles.input}
           value={celular}
-          keyboardType='numeric'
+          keyboardType="numeric"
           onChangeText={setCelular}
           placeholderTextColor="#999"
         />
         <TouchableOpacity onPress={handleSubmit} style={styles.button}>
           <Text style={styles.btText}>Salvar</Text>
         </TouchableOpacity>
-      </SafeAreaView>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
