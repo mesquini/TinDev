@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Constants from 'expo-constants';
 import {
   Alert,
   TouchableOpacity,
@@ -8,13 +9,22 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
-  AsyncStorage
+  AsyncStorage,
+  RefreshControl
 } from "react-native";
+
 import api from "../services/api";
 
 import logo from "../assets/logo.png";
 
+function wait(timeout) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+}
+
 export default function Perfil({ navigation }) {
+  var id = Math.random();
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [company, setCompany] = useState("");
@@ -22,20 +32,24 @@ export default function Perfil({ navigation }) {
   const [email, setEmail] = useState("");
   const [celular, setCelular] = useState("");
   const [user, setUser] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback( () => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, [refreshing]);
 
   useEffect(() => {
     async function loadInfo() {
-      console.log('perfil');
-      
-      await AsyncStorage.then(info => {
-        if (info) setUser(info);
-        else navigation.navigate("Sair");
-      });
+      let id = await AsyncStorage.getItem("user");
 
-      console.log(`perfil ${info._id}`);
+      const { data: own } = await api.get("/logge_dev", {
+        headers: { user: id }
+      });
+      setUser(own);
     }
     loadInfo();
-  }, []);
+  }, [id]);
 
   async function trataCampoNull(obj) {
     if (!obj.name) obj.name = user.name;
@@ -44,6 +58,14 @@ export default function Perfil({ navigation }) {
     if (!obj.blog) obj.blog = user.blog;
     if (!obj.email) obj.email = user.email;
     if (!obj.celular) obj.celular = user.celular;
+  }
+  async function limpaCampos() {
+    setName("");
+    setBio("");
+    setCompany("");
+    setBlog("");
+    setEmail("");
+    setCelular("");
   }
   async function handleSubmit() {
     const update = { name, bio, company, blog, email, celular };
@@ -54,20 +76,20 @@ export default function Perfil({ navigation }) {
       headers: { user: user._id }
     });
 
+    await limpaCampos();
+
     Alert.alert("Perfil alterado com sucesso!");
 
-    handleHome();
-  }
-
-  function handleHome() {
     navigation.navigate("Home", { user: user._id });
   }
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <TouchableOpacity onPress={handleHome}>
-        <Image style={styles.logo} source={logo} />
-      </TouchableOpacity>
-      <ScrollView>
+      <Image style={styles.logo} source={logo} />
+      <ScrollView style={styles.scroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <Text style={styles.text}>Nome</Text>
         <TextInput
           style={styles.input}
@@ -118,6 +140,8 @@ export default function Perfil({ navigation }) {
           keyboardType="numeric"
           onChangeText={setCelular}
           placeholderTextColor="#999"
+          placeholder={user.celular}
+          maxLength={11}
         />
         <TouchableOpacity onPress={handleSubmit} style={styles.button}>
           <Text style={styles.btText}>Salvar</Text>
@@ -131,13 +155,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    marginTop: Constants.statusBarHeight,
   },
   logo: {
-    marginTop: 30
+    marginTop: 20
   },
   input: {
-    height: 46,
+    height: 46,    
     alignSelf: "stretch",
     backgroundColor: "#fff",
     borderWidth: 1,
@@ -153,7 +178,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 10,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    marginBottom: 10
   },
   btText: {
     color: "#fff",
@@ -164,5 +190,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 5,
     fontWeight: "bold"
-  }
+  },
+  scroll: {
+    
+  },
 });

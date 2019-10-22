@@ -17,13 +17,15 @@ export default function Login({ navigation }) {
   const [user, setUser] = useState("");
 
   useEffect(() => {
-    AsyncStorage.getItem("user").then(user => {
-      console.log(user);
-
-      if (user) {
-        navigation.navigate("Home", { user });
-      }
-    });
+    async function load() {
+      console.log("login ");
+      await AsyncStorage.getItem("user").then(user => {
+        if (user) {
+          navigation.navigate("Home", { user });
+        }
+      });
+    }
+    load();
   }, []);
 
   async function handleLogin() {
@@ -34,7 +36,6 @@ export default function Login({ navigation }) {
     await AsyncStorage.setItem("user", data._id);
 
     navigation.navigate("Home", { user: data._id });
-    navigation.navigate({ Param: { user: data._id } });
   }
 
   return (

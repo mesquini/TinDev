@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Component } from "react";
+import Constants from "expo-constants";
 import {
   View,
   TouchableOpacity,
@@ -8,7 +9,8 @@ import {
   Image,
   StyleSheet,
   Alert,
-  AsyncStorage
+  AsyncStorage,
+  RefreshControl
 } from "react-native";
 
 import api from "../services/api";
@@ -16,22 +18,38 @@ import api from "../services/api";
 import logo from "../assets/logo.png";
 import github from "../assets/github.png";
 
+function wait(timeout) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+}
+
 export default function Matchs({ navigation }) {
   const [matchs, setMatch] = useState([]);
   const [idMatchs, setIdMatch] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    let devId = await AsyncStorage.getItem("user");
+
+    const { data } = await api.get(`/match`, {
+      headers: { user: devId }
+    });
+    const { users, id_matchs } = data;
+
+    setMatch(users);
+    setIdMatch(id_matchs);
+    wait(2000).then(() => setRefreshing(false));
+  }, [refreshing]);
 
   const url_wpp = "https://api.whatsapp.com/send?phone=55";
   const text_wpp = "&text=Olá%20tudo%20bem?%20Vamos%20fazer%20um%20freela?";
-  const devId = navigation.getParam("id");
 
   useEffect(() => {
     async function loadMatchs() {
-      navigation.navigate({ Param: { user: data._id } });
-      devId = AsyncStorage.getItem("user").then(() => {
-        console.log("match");
+      let devId = await AsyncStorage.getItem("user");
 
-        if (user) return user;
-      });
       const { data } = await api.get(`/match`, {
         headers: { user: devId }
       });
@@ -42,10 +60,6 @@ export default function Matchs({ navigation }) {
     }
     loadMatchs();
   }, []);
-
-  async function handleMain() {
-    await navigation.navigate("Home", { user: devId });
-  }
 
   async function handleDelete(e, matchId, id) {
     e.preventDefault();
@@ -60,21 +74,27 @@ export default function Matchs({ navigation }) {
   }
   return (
     <SafeAreaView style={StyleSheet.container}>
-      <TouchableOpacity onPress={handleMain}>
-        <Image style={styles.logo} source={logo} />
-      </TouchableOpacity>
-      <ScrollView style={styles.scroll}>
+      <Image style={styles.logo} source={logo} />
+      <ScrollView
+        style={styles.scroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {matchs.length === 0 ? (
           <Text style={styles.empty}>Você não possui nenhum match!</Text>
         ) : (
           matchs.map((item, i, itens) => (
             <View style={styles.listItem}>
-              <Image style={styles.avatar} source={{ uri: item.avatar }} />
-
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.company}>{item.company}</Text>
-              <Text style={styles.email}>{item.email}</Text>
-              <Text style={styles.bio}>{item.bio}</Text>
+              <View style={styles.infos}>
+                <Image style={styles.avatar} source={{ uri: item.avatar }} />
+              <View style={styles.infos2}>
+                <Text style={styles.company}>Empresa: {item.company}</Text>
+                <Text style={styles.email}>E-mail: {item.email}</Text>
+                <Text style={styles.bio}>Biografia: {item.bio}</Text>
+              </View>
+                <Text style={styles.name}>{item.name}</Text>
+              </View>
             </View>
           ))
         )}
@@ -86,7 +106,8 @@ export default function Matchs({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ddd"
+    backgroundColor: "#ddd",
+    marginTop: Constants.statusBarHeight
   },
   logo: {
     height: 32,
@@ -104,15 +125,30 @@ const styles = StyleSheet.create({
   listItem: {
     paddingHorizontal: 10,
     marginTop: 10,
-    borderWidth: 2,
+    marginRight: 2,
+    marginLeft: 2,
+    borderWidth: 1,
+    borderColor: "gray",
     borderStyle: "solid"
+  },
+  infos: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  infos2: {
+      flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start"
   },
   avatar: {
     width: 60,
     height: 50,
     resizeMode: "cover",
     borderRadius: 3,
-    paddingHorizontal: 20
+    paddingHorizontal: 10,
+    marginTop: 5,
+    marginBottom: 5,
+    marginRight: 10,
   },
   name: {
     fontWeight: "bold",

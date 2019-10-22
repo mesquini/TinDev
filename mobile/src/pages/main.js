@@ -22,7 +22,7 @@ import github from "../assets/github.png";
 import itsamatch from "../assets/itsamatch.png";
 
 export default function Main({ navigation }) {
-  const id = navigation.getParam("user");
+  const [id, setId] = useState("");
   const [users, setUsers] = useState([]);
   const [superLike, setSuper_Likes] = useState([]);
   const [owner, setOwner] = useState({});
@@ -44,7 +44,8 @@ export default function Main({ navigation }) {
 
   useEffect(() => {
     async function loadUsers() {
-      console.log(`main ${id}`);
+      let id = await AsyncStorage.getItem("user");
+      setId(id);
 
       const { data } = await api.get("/dashboard", {
         headers: { user: id }
@@ -60,37 +61,34 @@ export default function Main({ navigation }) {
       });
 
       //setMatchDev(own);
-      setOwner(own);
-      await AsyncStorage.setItem('own', owner)
-      console.log(owner);
     }
     loadUsers();
+  }, [id]);
 
-    async function random(array) {
-      for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-      }
+  async function random(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
     }
+  }
 
-    async function setSuperLikes(u) {
-      var sLike = [];
-      var cont = u.length - 1;
-      u.map(user => {
-        if (user.superlikes.length > 0) {
-          for (var i = user.superlikes.length - 1; i >= 0; i--) {
-            if (user.superlikes[i] === id) {
-              sLike[cont] = user._id;
-              cont--;
-            }
+  async function setSuperLikes(u) {
+    var sLike = [];
+    var cont = u.length - 1;
+    u.map(user => {
+      if (user.superlikes.length > 0) {
+        for (var i = user.superlikes.length - 1; i >= 0; i--) {
+          if (user.superlikes[i] === id) {
+            sLike[cont] = user._id;
+            cont--;
           }
         }
-      });
-      setSuper_Likes(sLike);
-    }
-  }, [id]);
+      }
+    });
+    setSuper_Likes(sLike);
+  }
 
   async function handleLike() {
     const [userCorrent, ...rest] = users;
@@ -121,8 +119,8 @@ export default function Main({ navigation }) {
     setUsers(rest);
   }
 
-  async function handleHome() {
-    await navigation.navigate("Home", { user: owner._id });
+  async function handleHome() {      
+    await navigation.navigate("Home", { user: id });
   }
 
   return (
