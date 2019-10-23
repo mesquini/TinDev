@@ -10,7 +10,7 @@ import {
   TextInput,
   ScrollView,
   AsyncStorage,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 
 import api from "../services/api";
@@ -140,7 +140,7 @@ export default function Perfil({ navigation }) {
           keyboardType="numeric"
           onChangeText={setCelular}
           placeholderTextColor="#999"
-          placeholder={user.celular}
+          placeholder={user.celular ? `${user.celular}` : "DDNNNNNNNNN"}
           maxLength={11}
         />
         <TouchableOpacity onPress={handleSubmit} style={styles.button}>
@@ -159,7 +159,8 @@ const styles = StyleSheet.create({
     marginTop: Constants.statusBarHeight,
   },
   logo: {
-    marginTop: 20
+    marginTop: 20,
+    marginBottom: 5,
   },
   input: {
     height: 46,    
@@ -192,6 +193,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   scroll: {
-    
+    margin: 0,
   },
 });

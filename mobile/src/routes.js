@@ -2,13 +2,12 @@ import React from "react";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { AsyncStorage } from "react-native";
 
 import login from "./pages/login";
 import main from "./pages/main";
 import perfil from "./pages/perfil";
 import matchs from "./pages/matchs";
-import teste from "./pages/teste";
+
 
 /*
 export default createAppContainer( createSwitchNavigator({

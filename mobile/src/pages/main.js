@@ -119,10 +119,9 @@ export default function Main({ navigation }) {
     setUsers(rest);
   }
 
-  async function handleHome() {      
+  async function handleHome() {
     await navigation.navigate("Home", { user: id });
   }
-
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity onPress={handleHome}>

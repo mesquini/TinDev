@@ -10,13 +10,16 @@ import {
   StyleSheet,
   Alert,
   AsyncStorage,
-  RefreshControl
+  RefreshControl,
+  Linking
 } from "react-native";
 
 import api from "../services/api";
 
 import logo from "../assets/logo.png";
 import github from "../assets/github.png";
+import wpp from "../assets/wpp.png";
+import blog from "../assets/linkedin.png";
 
 function wait(timeout) {
   return new Promise(resolve => {
@@ -44,7 +47,7 @@ export default function Matchs({ navigation }) {
   }, [refreshing]);
 
   const url_wpp = "https://api.whatsapp.com/send?phone=55";
-  const text_wpp = "&text=Olá%20tudo%20bem?%20Vamos%20fazer%20um%20freela?";
+  const text_wpp = "&text=Olá%20tudo%20bem?%20Bora%20fazer%20um%20freela??";
 
   useEffect(() => {
     async function loadMatchs() {
@@ -86,14 +89,54 @@ export default function Matchs({ navigation }) {
         ) : (
           matchs.map((item, i, itens) => (
             <View style={styles.listItem}>
-              <View style={styles.infos}>
+              <View style={styles.vImg}>
                 <Image style={styles.avatar} source={{ uri: item.avatar }} />
-              <View style={styles.infos2}>
-                <Text style={styles.company}>Empresa: {item.company}</Text>
-                <Text style={styles.email}>E-mail: {item.email}</Text>
-                <Text style={styles.bio}>Biografia: {item.bio}</Text>
               </View>
-                <Text style={styles.name}>{item.name}</Text>
+              <View style={{ flex: 1 }}>
+                <View style={styles.infos}>
+                  {item.blog ? (
+                    <TouchableOpacity
+                      style={styles.btGithub}
+                      onPress={() =>
+                        Linking.openURL(
+                          "https://www.linkedin.com/in/" + item.blog
+                        )
+                      }
+                    >
+                      <Image source={blog} />
+                    </TouchableOpacity>
+                  ) : (
+                    <Text></Text>
+                  )}
+                  {item.celular ? (
+                    <TouchableOpacity
+                      style={styles.btGithub}
+                      onPress={() =>
+                        Linking.openURL(url_wpp + item.celular + text_wpp)
+                      }
+                    >
+                      <Image source={wpp} />
+                    </TouchableOpacity>
+                  ) : (
+                    <Text></Text>
+                  )}
+                  <TouchableOpacity
+                    style={styles.btGithub}
+                    onPress={() => Linking.openURL(item.url_github)}
+                  >
+                    <Image source={github} />
+                  </TouchableOpacity>
+                  <Text style={styles.name}>{item.name}</Text>
+                </View>
+                <View style={styles.infos2}>
+                  <Text style={styles.txt}>
+                    {item.company ? `Empresa: ${item.company}` : ""}
+                    {item.email ? `/ E-mail: ${item.email}` : ""}
+                  </Text>
+                  <Text style={styles.txt}>
+                    {item.bio ? `Biografia: ${item.bio}` : ""}
+                  </Text>
+                </View>
               </View>
             </View>
           ))
@@ -116,6 +159,12 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 35
   },
+  empty: {
+    alignSelf: "center",
+    color: "#999",
+    fontSize: 20,
+    fontWeight: "bold"
+  },
   scroll: {
     marginBottom: 0
   },
@@ -123,6 +172,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   listItem: {
+    flex: 1,
+    flexDirection: "row",
     paddingHorizontal: 10,
     marginTop: 10,
     marginRight: 2,
@@ -134,12 +185,18 @@ const styles = StyleSheet.create({
   infos: {
     flex: 1,
     flexDirection: "row",
+    justifyContent: "flex-end",
+    marginBottom: 5,
   },
   infos2: {
-      flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start"
+    flex: 1,
+    marginTop: 2
   },
+  vImg: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    
+  },  
   avatar: {
     width: 60,
     height: 50,
@@ -148,10 +205,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 5,
     marginBottom: 5,
-    marginRight: 10,
+    marginRight: 10
   },
   name: {
     fontWeight: "bold",
     fontSize: 16
+  },
+  btGithub: {
+    marginRight: 3
+  },
+  txt: {
+    fontSize: 14,
+    marginBottom: 2
   }
 });
