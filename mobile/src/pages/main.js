@@ -9,7 +9,8 @@ import {
   StyleSheet,
   AsyncStorage,
   Linking,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
 
 import api from "../services/api";
@@ -27,6 +28,7 @@ export default function Main({ navigation }) {
   const [superLike, setSuper_Likes] = useState([]);
   const [owner, setOwner] = useState({});
   const [matchDev, setMatchDev] = useState(null);
+  const [loading, setLoad] = useState(true);
 
   useEffect(() => {
     const socket = io("http://tinderdev-backend.herokuapp.com", {
@@ -36,31 +38,33 @@ export default function Main({ navigation }) {
     socket.on("match", dev => {
       setMatchDev(dev);
     });
-
+    console.log('socket');
+    
     socket.on("superlike", dev => {
       setOwner(dev);
     });
-  }, [id]);
+  }, [owner._id]);
 
   useEffect(() => {
     async function loadUsers() {
       let id = await AsyncStorage.getItem("user");
-      setId(id);
 
       const { data } = await api.get("/dashboard", {
         headers: { user: id }
       });
 
       await random(data);
+      setId(id);
 
       setUsers(data.filter(user => user._id !== id));
       await setSuperLikes(data.filter(user => user._id !== id));
-
+      
       const { data: own } = await api.get("/logge_dev", {
         headers: { user: id }
       });
-
+      setOwner(own)          
       //setMatchDev(own);
+      setLoad(false);
     }
     loadUsers();
   }, [id]);
@@ -100,7 +104,7 @@ export default function Main({ navigation }) {
     setUsers(rest);
   }
 
-  async function handleDislike() {
+  async function handleSuperLike() {
     const [userCorrent, ...rest] = users;
 
     await api.post(`/dashboard/${userCorrent._id}/superlikes`, null, {
@@ -109,7 +113,7 @@ export default function Main({ navigation }) {
 
     setUsers(rest);
   }
-  async function handleSuperLike() {
+  async function handleDislike() {
     const [userCorrent, ...rest] = users;
 
     await api.post(`/dashboard/${userCorrent._id}/dislikes`, null, {
@@ -119,75 +123,99 @@ export default function Main({ navigation }) {
     setUsers(rest);
   }
 
-  async function handleHome() {
-    await navigation.navigate("Home", { user: id });
-  }
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={handleHome}>
-        <Image style={styles.logo} source={logo} />
-      </TouchableOpacity>
-      <View style={styles.cardsContainer}>
-        {users.lenght === 0 ? (
-          <Text style={styles.empty}>Acabou :(</Text>
-        ) : (
-          users.map((user, index) => (
-            <View
-              key={user._id}
-              style={[styles.card, { zIndex: users.length - index }]}
-            >
-              <Image style={styles.avatar} source={{ uri: user.avatar }} />
-              {superLike.length > 0 &&
-                superLike.map(
-                  s =>
-                    s === user._id && (
-                      <Image style={styles.star} key={s} source={star} />
-                    )
-                )}
-              <View style={styles.footer}>
-                <View style={styles.nameContainer}>
-                  <Text style={styles.name}>{user.name}</Text>
-                  <TouchableOpacity
-                    style={styles.github}
-                    onPress={() => Linking.openURL(user.url_github)}
-                  >
-                    <Image source={github} />
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.company}>{user.company}</Text>
-
-                <Text style={styles.bio} namberOfLines={3}>
-                  {user.bio}
-                </Text>
-              </View>
-            </View>
-          ))
-        )}
-      </View>
-
-      {users.length !== 0 && (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleDislike}>
-            <Image source={dislike} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleSuperLike}>
-            <Image source={star} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleLike}>
-            <Image source={like} />
-          </TouchableOpacity>
+      <Image style={styles.logo} source={logo} />
+      {loading === true ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <ActivityIndicator size="large" color="#df4720" />
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+            Carregando informações...
+          </Text>
         </View>
-      )}
-
-      {matchDev && (
-        <View style={styles.matchContainer}>
-          <Image source={itsamatch} />
-          <Image style={styles.matchAvatar} source={{ uri: matchDev.avatar }} />
-          <Text style={styles.matchName}>{matchDev.name}</Text>
-          <Text style={styles.matchBio}>{matchDev.bio}</Text>
-          <TouchableOpacity onPress={() => setMatchDev(null)}>
-            <Text style={styles.matchButton}>Fechar</Text>
-          </TouchableOpacity>
+      ) : (
+        <View style={styles.cardsContainer}>
+          <View style={styles.cardsContainer}>
+            {users.lenght === 0 ? (
+              <Text style={styles.empty}>Acabou :(</Text>
+            ) : (
+              users.map((user, index) => (
+                <View
+                  key={user._id}
+                  style={[styles.card, { zIndex: users.length - index }]}
+                >
+                  <Image style={styles.avatar} source={{ uri: user.avatar }} />
+                  {superLike.length > 0 &&
+                    superLike.map(
+                      s =>
+                        s === user._id && (
+                          <Image style={styles.star} key={s} source={star} />
+                        )
+                    )}
+                  <View style={styles.footer}>
+                    <View style={styles.nameContainer}>
+                      <Text style={styles.name}>{user.name}</Text>
+                      <TouchableOpacity
+                        style={styles.github}
+                        onPress={() => Linking.openURL(user.url_github)}
+                      >
+                        <Image source={github} />
+                      </TouchableOpacity>
+                    </View>
+                    <Text style={styles.company}>
+                      {user.company ? `Empresa: ${user.company}` : ""}
+                    </Text>
+                    <Text style={styles.bio} namberOfLines={3}>
+                      {user.bio}
+                    </Text>
+                  </View>
+                </View>
+              ))
+            )}
+          </View>
+          {users.length > 0 && (
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.button} onPress={handleDislike}>
+                <Image source={dislike} />
+              </TouchableOpacity>
+              {owner.super_like ? (
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleSuperLike}
+                >
+                  <Image source={star} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={
+                    (styles.noButton)
+                  }
+                  onPress={() => Alert.alert("Você já usou seu super like")}
+                >
+                  <Image source={star} />
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity style={styles.button} onPress={handleLike}>
+                <Image source={like} />
+              </TouchableOpacity>
+            </View>
+          )}
+          {matchDev && (
+            <View style={styles.matchContainer}>
+              <Image source={itsamatch} />
+              <Image
+                style={styles.matchAvatar}
+                source={{ uri: matchDev.avatar }}
+              />
+              <Text style={styles.matchName}>{matchDev.name}</Text>
+              <Text style={styles.matchBio}>{matchDev.bio}</Text>
+              <TouchableOpacity onPress={() => setMatchDev(null)}>
+                <Text style={styles.matchButton}>Fechar</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       )}
     </SafeAreaView>
@@ -205,9 +233,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: "stretch",
     justifyContent: "center",
-    maxHeight: 500
+    maxHeight: 800
   },
   card: {
+    flex: 1,
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 8,
@@ -263,6 +292,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 30
   },
   button: {
@@ -282,7 +312,23 @@ const styles = StyleSheet.create({
       height: 2
     }
   },
-
+  noButton : {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#ddd",
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 20,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    shadowOffset: {
+      width: 0,
+      height: 2
+    }
+  },
   matchContainer: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0, 0.5)",

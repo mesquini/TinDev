@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Component } from "react";
+import Swipeable from "react-native-swipeable-row";
 import Constants from "expo-constants";
 import {
   View,
@@ -11,7 +12,9 @@ import {
   Alert,
   AsyncStorage,
   RefreshControl,
-  Linking
+  Linking,
+  ActivityIndicator,
+  TouchableHighlight
 } from "react-native";
 
 import api from "../services/api";
@@ -20,6 +23,7 @@ import logo from "../assets/logo.png";
 import github from "../assets/github.png";
 import wpp from "../assets/wpp.png";
 import blog from "../assets/linkedin.png";
+import x from "../assets/clear.png";
 
 function wait(timeout) {
   return new Promise(resolve => {
@@ -31,19 +35,40 @@ export default function Matchs({ navigation }) {
   const [matchs, setMatch] = useState([]);
   const [idMatchs, setIdMatch] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoad] = useState(true);
+  const [owrnId, setOwrnId] = useState("");
 
+  function rightButtons(idMatch, targetId) {
+    return [
+      <TouchableHighlight
+        style={{
+          backgroundColor: "#d1d6da",
+          flex: 1,
+          justifyContent: "center",
+          marginTop: 10,
+          borderRadius: 2,
+        }}
+        onPress={() => handleDelete(idMatch, targetId)}
+        underlayColor={"#d1d6da"}
+      >
+        <Image style={{ marginHorizontal: 20 }} source={x} />
+      </TouchableHighlight>
+    ];
+  }
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    let devId = await AsyncStorage.getItem("user");
+    setLoad(true);
 
     const { data } = await api.get(`/match`, {
-      headers: { user: devId }
+      headers: { user: owrnId }
     });
     const { users, id_matchs } = data;
 
+    setLoad(false);
     setMatch(users);
     setIdMatch(id_matchs);
-    wait(2000).then(() => setRefreshing(false));
+
+    wait(1000).then(() => setRefreshing(false));
   }, [refreshing]);
 
   const url_wpp = "https://api.whatsapp.com/send?phone=55";
@@ -52,96 +77,119 @@ export default function Matchs({ navigation }) {
   useEffect(() => {
     async function loadMatchs() {
       let devId = await AsyncStorage.getItem("user");
-
       const { data } = await api.get(`/match`, {
         headers: { user: devId }
       });
       const { users, id_matchs } = data;
-
+      setOwrnId(devId);
+      setLoad(false);
       setMatch(users);
       setIdMatch(id_matchs);
     }
     loadMatchs();
   }, []);
 
-  async function handleDelete(e, matchId, id) {
-    e.preventDefault();
-
-    if (Alert.confirm("Deseja deletar esse Match?")) {
-      await api.delete(`/dashboard/${devId}/match`, {
-        headers: { matchId, targerid: id }
-      });
-
-      setMatch(matchs.filter(user => user._id !== id));
-    }
+  async function handleDelete(matchId, id) {
+    Alert.alert(
+      "Alerta",
+      "Deseja deletar esse Match?",
+      [        
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        { text: "Sim", onPress: async () => {
+          await api.delete(`/dashboard/${owrnId}/match`, {
+            headers: { matchId, targerid: id }
+          });      
+          setMatch(matchs.filter(user => user._id !== id));          
+        } }
+      ],
+      { cancelable: false }
+    );
   }
   return (
-    <SafeAreaView style={StyleSheet.container}>
+    <SafeAreaView style={styles.container}>
       <Image style={styles.logo} source={logo} />
-      <ScrollView
-        style={styles.scroll}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        {matchs.length === 0 ? (
-          <Text style={styles.empty}>Você não possui nenhum match!</Text>
-        ) : (
-          matchs.map((item, i, itens) => (
-            <View style={styles.listItem}>
-              <View style={styles.vImg}>
-                <Image style={styles.avatar} source={{ uri: item.avatar }} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <View style={styles.infos}>
-                  {item.blog ? (
-                    <TouchableOpacity
-                      style={styles.btGithub}
-                      onPress={() =>
-                        Linking.openURL(
-                          "https://www.linkedin.com/in/" + item.blog
-                        )
-                      }
-                    >
-                      <Image source={blog} />
-                    </TouchableOpacity>
-                  ) : (
-                    <Text></Text>
-                  )}
-                  {item.celular ? (
-                    <TouchableOpacity
-                      style={styles.btGithub}
-                      onPress={() =>
-                        Linking.openURL(url_wpp + item.celular + text_wpp)
-                      }
-                    >
-                      <Image source={wpp} />
-                    </TouchableOpacity>
-                  ) : (
-                    <Text></Text>
-                  )}
-                  <TouchableOpacity
-                    style={styles.btGithub}
-                    onPress={() => Linking.openURL(item.url_github)}
-                  >
-                    <Image source={github} />
-                  </TouchableOpacity>
-                  <Text style={styles.name}>{item.name}</Text>
+      {loading === true ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <ActivityIndicator size="large" color="#df4720" />
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+            Carregando matchs...
+          </Text>
+        </View>
+      ) : (
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {matchs.length === 0 ? (
+            <Text style={styles.empty}>Você não possui nenhum match!</Text>
+          ) : (
+            matchs.map((item, i, itens) => (
+              <Swipeable rightButtons={rightButtons(idMatchs[i], item._id)}>
+                <View style={styles.listItem}>
+                  <View style={styles.vImg}>
+                    <Image
+                      style={styles.avatar}
+                      source={{ uri: item.avatar }}
+                    />
+                  </View>
+                  <View style={{ flex: 1, marginTop: 2 }}>
+                    <View style={styles.infos}>
+                      {item.blog ? (
+                        <TouchableOpacity
+                          style={styles.btGithub}
+                          onPress={() =>
+                            Linking.openURL(
+                              "https://www.linkedin.com/in/" + item.blog
+                            )
+                          }
+                        >
+                          <Image source={blog} />
+                        </TouchableOpacity>
+                      ) : (
+                        <Text></Text>
+                      )}
+                      {item.celular ? (
+                        <TouchableOpacity
+                          style={styles.btGithub}
+                          onPress={() =>
+                            Linking.openURL(url_wpp + item.celular + text_wpp)
+                          }
+                        >
+                          <Image source={wpp} />
+                        </TouchableOpacity>
+                      ) : (
+                        <Text></Text>
+                      )}
+                      <TouchableOpacity
+                        style={styles.btGithub}
+                        onPress={() => Linking.openURL(item.url_github)}
+                      >
+                        <Image source={github} />
+                      </TouchableOpacity>
+                      <Text style={styles.name}>{item.name}</Text>
+                    </View>
+                    <View style={styles.infos2}>
+                      <Text style={styles.txt}>
+                        {item.company ? `Empresa: ${item.company}` : ""}
+                      </Text>
+                      <Text style={styles.txt}>
+                        {item.email ? `E-mail: ${item.email}` : ""}
+                      </Text>
+                    </View>
+                  </View>
                 </View>
-                <View style={styles.infos2}>
-                  <Text style={styles.txt}>
-                    {item.company ? `Empresa: ${item.company}` : ""}
-                    {item.email ? `/ E-mail: ${item.email}` : ""}
-                  </Text>
-                  <Text style={styles.txt}>
-                    {item.bio ? `Biografia: ${item.bio}` : ""}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          ))
-        )}
-      </ScrollView>
+              </Swipeable>
+            ))
+          )}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
@@ -180,26 +228,34 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     borderWidth: 1,
     borderColor: "gray",
-    borderStyle: "solid"
+    borderStyle: "solid",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    shadowOffset: {
+      width: 0,
+      height: 2
+    }
   },
   infos: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "flex-end",
     marginBottom: 5,
+    marginTop: 2
   },
   infos2: {
     flex: 1,
     marginTop: 2
   },
   vImg: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    
-  },  
+    alignItems: "center",
+    justifyContent: "center"
+  },
   avatar: {
     width: 60,
-    height: 50,
+    height: 60,
     resizeMode: "cover",
     borderRadius: 3,
     paddingHorizontal: 10,
@@ -212,7 +268,15 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   btGithub: {
-    marginRight: 3
+    marginRight: 3,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    shadowOffset: {
+      width: 0,
+      height: 2
+    }
   },
   txt: {
     fontSize: 14,

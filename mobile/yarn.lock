@@ -3886,6 +3886,12 @@ react-native-safe-area-view@^0.14.1, react-native-safe-area-view@^0.14.6:
   dependencies:
     debounce "^1.2.0"
 
+react-native-swipeable-row@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/react-native-swipeable-row/-/react-native-swipeable-row-0.8.1.tgz#6076ab2568c36cd96bc73882470598cfac3b20c9"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-tab-view@^2.9.0:
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-2.10.0.tgz#5e249e5650502010013449ffd4e5edc18a95364b"

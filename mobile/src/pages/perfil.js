@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
 import {
   Alert,
   TouchableOpacity,
   KeyboardAvoidingView,
+  View,
+  ActivityIndicator,
   Text,
   Image,
   StyleSheet,
   TextInput,
   ScrollView,
   AsyncStorage,
-  RefreshControl,
+  RefreshControl
 } from "react-native";
 
 import api from "../services/api";
@@ -33,8 +35,9 @@ export default function Perfil({ navigation }) {
   const [celular, setCelular] = useState("");
   const [user, setUser] = useState({});
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoad] = useState(true);
 
-  const onRefresh = React.useCallback( () => {
+  const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
   }, [refreshing]);
@@ -46,6 +49,7 @@ export default function Perfil({ navigation }) {
       const { data: own } = await api.get("/logge_dev", {
         headers: { user: id }
       });
+      setLoad(false);
       setUser(own);
     }
     loadInfo();
@@ -85,68 +89,80 @@ export default function Perfil({ navigation }) {
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <Image style={styles.logo} source={logo} />
-      <ScrollView style={styles.scroll}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        <Text style={styles.text}>Nome</Text>
-        <TextInput
-          style={styles.input}
-          value={name}
-          onChangeText={setName}
-          placeholderTextColor="#999"
-          placeholder={user.name}
-        />
-        <Text style={styles.text}>Biografia</Text>
-        <TextInput
-          style={styles.input}
-          value={bio}
-          multiline={true}
-          onChangeText={setBio}
-          placeholderTextColor="#999"
-          placeholder={user.bio}
-        />
-        <Text style={styles.text}>Empresa</Text>
-        <TextInput
-          style={styles.input}
-          value={company}
-          onChangeText={setCompany}
-          placeholderTextColor="#999"
-          placeholder={user.company}
-        />
-        <Text style={styles.text}>Linkedin</Text>
-        <TextInput
-          style={styles.input}
-          value={blog}
-          onChangeText={setBlog}
-          placeholderTextColor="#999"
-          placeholder={user.blog}
-        />
-        <Text style={styles.text}>E-mail</Text>
-        <TextInput
-          style={styles.input}
-          value={email}
-          onChangeText={setEmail}
-          autoCompleteType="email"
-          keyboardType="email-address"
-          placeholderTextColor="#999"
-          placeholder={user.email}
-        />
-        <Text style={styles.text}>Celular</Text>
-        <TextInput
-          style={styles.input}
-          value={celular}
-          keyboardType="numeric"
-          onChangeText={setCelular}
-          placeholderTextColor="#999"
-          placeholder={user.celular ? `${user.celular}` : "DDNNNNNNNNN"}
-          maxLength={11}
-        />
-        <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-          <Text style={styles.btText}>Salvar</Text>
-        </TouchableOpacity>
-      </ScrollView>
+      {loading === true ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <ActivityIndicator size="large" color="#df4720" />
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+            Carregando perfil...
+          </Text>
+        </View>
+      ) : (
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <Text style={styles.text}>Nome</Text>
+          <TextInput
+            style={styles.input}
+            value={name}
+            onChangeText={setName}
+            placeholderTextColor="#999"
+            placeholder={user.name}
+          />
+          <Text style={styles.text}>Biografia</Text>
+          <TextInput
+            style={styles.input}
+            value={bio}
+            multiline={true}
+            onChangeText={setBio}
+            placeholderTextColor="#999"
+            placeholder={user.bio}
+          />
+          <Text style={styles.text}>Empresa</Text>
+          <TextInput
+            style={styles.input}
+            value={company}
+            onChangeText={setCompany}
+            placeholderTextColor="#999"
+            placeholder={user.company}
+          />
+          <Text style={styles.text}>Linkedin</Text>
+          <TextInput
+            style={styles.input}
+            value={blog}
+            onChangeText={setBlog}
+            placeholderTextColor="#999"
+            placeholder={user.blog}
+          />
+          <Text style={styles.text}>E-mail</Text>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            autoCompleteType="email"
+            keyboardType="email-address"
+            placeholderTextColor="#999"
+            placeholder={user.email}
+          />
+          <Text style={styles.text}>Celular</Text>
+          <TextInput
+            style={styles.input}
+            value={celular}
+            keyboardType="numeric"
+            onChangeText={setCelular}
+            placeholderTextColor="#999"
+            placeholder={user.celular ? `${user.celular}` : "DDNNNNNNNNN"}
+            maxLength={11}
+          />
+          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+            <Text style={styles.btText}>Salvar</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      )}
     </KeyboardAvoidingView>
   );
 }
@@ -156,21 +172,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: Constants.statusBarHeight,
+    marginTop: Constants.statusBarHeight
   },
   logo: {
     marginTop: 20,
-    marginBottom: 5,
+    marginBottom: 5
   },
   input: {
-    height: 46,    
+    height: 46,
     alignSelf: "stretch",
     backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 4,
     marginTop: 10,
-    paddingHorizontal: 15
+    marginRight: 10,
+    marginLeft: 10,
+    paddingHorizontal: 15,
   },
   button: {
     height: 46,
@@ -178,6 +196,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#df4723",
     borderRadius: 4,
     marginTop: 10,
+    marginRight: 10,
+    marginLeft: 10,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10
@@ -190,9 +210,13 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginTop: 5,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    marginRight: 10,
+    marginLeft: 10,
   },
   scroll: {
+    flex: 1,
     margin: 0,
-  },
+    alignSelf: "center",
+  }
 });
