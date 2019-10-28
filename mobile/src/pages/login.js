@@ -16,17 +16,6 @@ import logo from "../assets/logo.png";
 
 export default function Login({ navigation }) {
   const [user, setUser] = useState("");
-  useEffect(() => {
-    async function load() {
-      await AsyncStorage.getItem("user").then(user => {
-        console.log("login " + user);
-        if (user) {
-          navigation.navigate("Home", { user });
-        }
-      });
-    }
-    load();
-  }, []);
 
   async function handleLogin() {
     const { data } = await api.post("/dashboard/", {

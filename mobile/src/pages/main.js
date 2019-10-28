@@ -38,8 +38,7 @@ export default function Main({ navigation }) {
     socket.on("match", dev => {
       setMatchDev(dev);
     });
-    console.log('socket');
-    
+
     socket.on("superlike", dev => {
       setOwner(dev);
     });
@@ -58,12 +57,12 @@ export default function Main({ navigation }) {
 
       setUsers(data.filter(user => user._id !== id));
       await setSuperLikes(data.filter(user => user._id !== id));
-      
+
       const { data: own } = await api.get("/logge_dev", {
         headers: { user: id }
       });
-      setOwner(own)          
-      //setMatchDev(own);
+      setOwner(own);
+      setMatchDev(own);
       setLoad(false);
     }
     loadUsers();
@@ -124,8 +123,7 @@ export default function Main({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Image style={styles.logo} source={logo} />
+    <SafeAreaView style={{flex:1}}>
       {loading === true ? (
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -136,7 +134,8 @@ export default function Main({ navigation }) {
           </Text>
         </View>
       ) : (
-        <View style={styles.cardsContainer}>
+        <SafeAreaView style={styles.container}>
+          <Image style={styles.logo} source={logo} />
           <View style={styles.cardsContainer}>
             {users.lenght === 0 ? (
               <Text style={styles.empty}>Acabou :(</Text>
@@ -189,9 +188,7 @@ export default function Main({ navigation }) {
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
-                  style={
-                    (styles.noButton)
-                  }
+                  style={styles.noButton}
                   onPress={() => Alert.alert("Você já usou seu super like")}
                 >
                   <Image source={star} />
@@ -202,22 +199,22 @@ export default function Main({ navigation }) {
               </TouchableOpacity>
             </View>
           )}
-          {matchDev && (
-            <View style={styles.matchContainer}>
-              <Image source={itsamatch} />
-              <Image
-                style={styles.matchAvatar}
-                source={{ uri: matchDev.avatar }}
-              />
-              <Text style={styles.matchName}>{matchDev.name}</Text>
-              <Text style={styles.matchBio}>{matchDev.bio}</Text>
-              <TouchableOpacity onPress={() => setMatchDev(null)}>
-                <Text style={styles.matchButton}>Fechar</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
+        </SafeAreaView>
       )}
+            {matchDev && (
+              <View style={styles.matchContainer}>
+                <Image source={itsamatch} />
+                <Image
+                  style={styles.matchAvatar}
+                  source={{ uri: matchDev.avatar }}
+                />
+                <Text style={styles.matchName}>{matchDev.name}</Text>
+                <Text style={styles.matchBio}>{matchDev.bio}</Text>
+                <TouchableOpacity onPress={() => setMatchDev(null)}>
+                  <Text style={styles.matchButton}>Fechar</Text>
+                </TouchableOpacity>
+              </View>
+            )}
     </SafeAreaView>
   );
 }
@@ -245,7 +242,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject
   },
   logo: {
-    marginTop: 30
+    marginTop: 30,
   },
   empty: {
     alignSelf: "center",
@@ -285,7 +282,7 @@ const styles = StyleSheet.create({
   star: {
     width: 35,
     height: 35,
-    position: "absolute",
+    //position: "absolute",
     margin: 8,
     borderRadius: 50,
     backgroundColor: "#fff"
@@ -312,7 +309,7 @@ const styles = StyleSheet.create({
       height: 2
     }
   },
-  noButton : {
+  noButton: {
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -332,6 +329,8 @@ const styles = StyleSheet.create({
   matchContainer: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0, 0.5)",
+    flex: 1,
+    flexDirection: 'column',
     justifyContent: "center",
     alignItems: "center"
   },
