@@ -37,8 +37,15 @@ export default function Perfil({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoad] = useState(true);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
+    let id = await AsyncStorage.getItem("user");
+
+    const { data: own } = await api.get("/logge_dev", {
+      headers: { user: id }
+    });
+    setLoad(false);
+    setUser(own);
     wait(2000).then(() => setRefreshing(false));
   }, [refreshing]);
 
@@ -188,7 +195,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginRight: 10,
     marginLeft: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 15
   },
   button: {
     height: 46,
@@ -212,11 +219,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontWeight: "bold",
     marginRight: 10,
-    marginLeft: 10,
+    marginLeft: 10
   },
   scroll: {
     flex: 1,
     margin: 0,
-    alignSelf: "center",
+    alignSelf: "center"
   }
 });

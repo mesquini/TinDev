@@ -3,28 +3,39 @@ import api from "../services/api";
 
 import {
   KeyboardAvoidingView,
-  Platform,
+  Alert,
   Text,
   StyleSheet,
   Image,
   TextInput,
   TouchableOpacity,
-  AsyncStorage
+  AsyncStorage,
+  ActivityIndicator,
+  View
 } from "react-native";
 
 import logo from "../assets/logo.png";
 
 export default function Login({ navigation }) {
   const [user, setUser] = useState("");
+  const [loading, setLoad] = useState(false);
 
   async function handleLogin() {
-    const { data } = await api.post("/dashboard/", {
-      username: user.toLowerCase()
-    });
+    if (!user) Alert.alert("Invalido!", "Informe um usuario!");
+    else {
+      setLoad(true);
+      const { data } = await api.post("/dashboard/", {
+        username: user.toLowerCase()
+      });
 
-    await AsyncStorage.setItem("user", data._id);
+      setUser("");
 
-    navigation.navigate("Home", { user: data._id });
+      await AsyncStorage.clear();      
+      await AsyncStorage.setItem("user", data._id);
+
+      setLoad(false);
+      navigation.navigate("Home", { user: data._id });
+    }
   }
 
   return (
@@ -42,6 +53,16 @@ export default function Login({ navigation }) {
       <TouchableOpacity onPress={handleLogin} style={styles.button}>
         <Text style={styles.btText}>Entrar</Text>
       </TouchableOpacity>
+      {loading && (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center", flexDirection: 'row' }}
+        >          
+          <Text style={{ fontSize: 16, fontWeight: "bold", marginRight: 5 }}>
+            Carregando...
+          </Text>
+          <ActivityIndicator size="small" color="#df4720" />
+        </View>
+      )}
     </KeyboardAvoidingView>
   );
 }

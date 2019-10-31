@@ -8,7 +8,6 @@ import main from "./pages/main";
 import perfil from "./pages/perfil";
 import matchs from "./pages/matchs";
 
-
 /*
 export default createAppContainer( createSwitchNavigator({
   login,
@@ -25,6 +24,7 @@ export default createAppContainer(
       Matchs: matchs,
       Sair: login
     },
+
     {
       tabBarOptions: {
         activeTintColor: "#333",
@@ -34,6 +34,12 @@ export default createAppContainer(
         },
         showLabel: true
       },
+      backBehavior: "history",
+      resetOnBlur: true,
+      initialRouteParams: {
+        
+      },
+      unmountInactiveScreens: true,
       defaultNavigationOptions: ({ navigation }) => ({
         tabBarIcon: ({ focused, horizontal, tintColor }) => {
           const { routeName } = navigation.state;

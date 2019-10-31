@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import {
   View,
@@ -23,6 +23,7 @@ import github from "../assets/github.png";
 import itsamatch from "../assets/itsamatch.png";
 
 export default function Main({ navigation }) {
+  const user = navigation.navigate("user");
   const [id, setId] = useState("");
   const [users, setUsers] = useState([]);
   const [superLike, setSuper_Likes] = useState([]);
@@ -42,31 +43,31 @@ export default function Main({ navigation }) {
     socket.on("superlike", dev => {
       setOwner(dev);
     });
-  }, [owner._id]);
+  }, []);
 
-  useEffect(() => {
-    async function loadUsers() {
-      let id = await AsyncStorage.getItem("user");
+  useEffect(async () => {
+    let id = await AsyncStorage.getItem("user");
 
-      const { data } = await api.get("/dashboard", {
-        headers: { user: id }
-      });
+    if (!id) navigation.navigate("Sair");
 
-      await random(data);
-      setId(id);
+    const { data } = await api.get("/dashboard", {
+      headers: { user: id }
+    });
 
-      setUsers(data.filter(user => user._id !== id));
-      await setSuperLikes(data.filter(user => user._id !== id));
+    await random(data);
+    setId(id);
 
-      const { data: own } = await api.get("/logge_dev", {
-        headers: { user: id }
-      });
-      setOwner(own);
-      setMatchDev(own);
-      setLoad(false);
-    }
-    loadUsers();
-  }, [id]);
+    setUsers(data.filter(user => user._id !== id));
+
+    await setSuperLikes(data.filter(user => user._id !== id));
+
+    const { data: own } = await api.get("/logge_dev", {
+      headers: { user: id }
+    });
+
+    setOwner(own);
+    setLoad(false);
+  }, [user]);
 
   async function random(array) {
     for (var i = array.length - 1; i > 0; i--) {
@@ -123,7 +124,7 @@ export default function Main({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       {loading === true ? (
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -201,20 +202,17 @@ export default function Main({ navigation }) {
           )}
         </SafeAreaView>
       )}
-            {matchDev && (
-              <View style={styles.matchContainer}>
-                <Image source={itsamatch} />
-                <Image
-                  style={styles.matchAvatar}
-                  source={{ uri: matchDev.avatar }}
-                />
-                <Text style={styles.matchName}>{matchDev.name}</Text>
-                <Text style={styles.matchBio}>{matchDev.bio}</Text>
-                <TouchableOpacity onPress={() => setMatchDev(null)}>
-                  <Text style={styles.matchButton}>Fechar</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+      {matchDev && (
+        <View style={styles.matchContainer}>
+          <Image source={itsamatch} />
+          <Image style={styles.matchAvatar} source={{ uri: matchDev.avatar }} />
+          <Text style={styles.matchName}>{matchDev.name}</Text>
+          <Text style={styles.matchBio}>{matchDev.bio}</Text>
+          <TouchableOpacity onPress={() => setMatchDev(null)}>
+            <Text style={styles.matchButton}>Fechar</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -242,7 +240,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject
   },
   logo: {
-    marginTop: 30,
+    marginTop: 30
   },
   empty: {
     alignSelf: "center",
@@ -330,7 +328,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0, 0.5)",
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center"
   },

@@ -24,6 +24,7 @@ import github from "../assets/github.png";
 import wpp from "../assets/wpp.png";
 import blog from "../assets/linkedin.png";
 import x from "../assets/clear.png";
+import { Date } from "core-js";
 
 function wait(timeout) {
   return new Promise(resolve => {
@@ -32,6 +33,7 @@ function wait(timeout) {
 }
 
 export default function Matchs({ navigation }) {
+  var id = navigation.navigate("user");
   const [matchs, setMatch] = useState([]);
   const [idMatchs, setIdMatch] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -46,7 +48,7 @@ export default function Matchs({ navigation }) {
           flex: 1,
           justifyContent: "center",
           marginTop: 10,
-          borderRadius: 2,
+          borderRadius: 2
         }}
         onPress={() => handleDelete(idMatch, targetId)}
         underlayColor={"#d1d6da"}
@@ -58,16 +60,15 @@ export default function Matchs({ navigation }) {
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     setLoad(true);
-
+    let devId = await AsyncStorage.getItem("user");
     const { data } = await api.get(`/match`, {
-      headers: { user: owrnId }
+      headers: { user: devId }
     });
     const { users, id_matchs } = data;
-
-    setLoad(false);
+    setOwrnId(devId);
     setMatch(users);
     setIdMatch(id_matchs);
-
+    setLoad(false);
     wait(1000).then(() => setRefreshing(false));
   }, [refreshing]);
 
@@ -82,28 +83,31 @@ export default function Matchs({ navigation }) {
       });
       const { users, id_matchs } = data;
       setOwrnId(devId);
-      setLoad(false);
       setMatch(users);
       setIdMatch(id_matchs);
+      setLoad(false);
     }
     loadMatchs();
-  }, []);
+  }, [id]);
 
   async function handleDelete(matchId, id) {
     Alert.alert(
       "Alerta",
       "Deseja deletar esse Match?",
-      [        
+      [
         {
           text: "Cancel",
           style: "cancel"
         },
-        { text: "Sim", onPress: async () => {
-          await api.delete(`/dashboard/${owrnId}/match`, {
-            headers: { matchId, targerid: id }
-          });      
-          setMatch(matchs.filter(user => user._id !== id));          
-        } }
+        {
+          text: "Sim",
+          onPress: async () => {
+            await api.delete(`/dashboard/${owrnId}/match`, {
+              headers: { matchId, targerid: id }
+            });
+            setMatch(matchs.filter(user => user._id !== id));
+          }
+        }
       ],
       { cancelable: false }
     );
